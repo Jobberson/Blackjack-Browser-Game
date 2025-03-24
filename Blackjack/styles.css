@@ -1,0 +1,12 @@
+html{
+  background: green;
+}
+
+#Title{
+  text-align: center;
+  font-size: 33px;
+}
+
+p{
+  color: white;
+}
