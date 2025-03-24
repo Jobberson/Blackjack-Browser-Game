@@ -3,9 +3,7 @@ let screen = document.getElementById("cards-drawn");
 let message = document.getElementById("cards-message"); 
 
 let sum = 0;
-let counter = 0;
 
-// cards
 const originalCards = 
     [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11, 
      2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11, 
@@ -14,7 +12,6 @@ const originalCards =
 var allCards = [...originalCards]; // a copy of the original cards
 var cardDrawn = [];
 
-// game manager
 var canDrawOneMore = false;
 var hasStarted = false;
 
@@ -45,7 +42,6 @@ function drawInitial()
     allCards.splice(randomIndex, 1); 
   }
   
-  counter = 2;
   checkSum();
   updateScreen();
   dealerInitial();
@@ -63,7 +59,6 @@ function drawMore()
     sum += allCards[randomIndex];
     cardDrawn.push(allCards[randomIndex]);
     allCards.splice(randomIndex, 1); 
-    counter++;
     checkSum();
     updateScreen();
     dealerDrawMore();
@@ -98,7 +93,6 @@ function updateScreen()
 function reset()
 {
   sum = 0;
-  counter = 0;
   cardDrawn = [];
   hasStarted = false;
   canDrawOneMore = false;
