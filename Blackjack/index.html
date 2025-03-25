@@ -1,6 +1,7 @@
 <html>
   <head>   
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="CardStyles/cards.css">
     <script src="script.js" defer></script>
   </head>
   <body>
@@ -8,13 +9,16 @@
       <h1>Blackjack</h1>
     </div>
     <div id="Game">
-      <button OnClick = "drawInitial()">Draw Cards</button>
-      <button OnClick = "drawMore()">Draw 1+ Card</button>
-      <button OnClick = "reset()">Reset</button>
-      <p id="cards-drawn">Player Cards drawn: </p>
+      <button onclick="drawInitial()">Draw Cards</button>
+      <button onclick="drawMore()">Draw 1+ Card</button>
+      <button onclick="stand()">Stand</button>
+      <button onclick="reset()">Reset</button>
+      <p id="cards-drawn">Cards drawn: </p>
       <p id="cards-dealer">Dealer Card: </p>
       <p id="cards-maxSum">Max Sum: </p>
       <p id="cards-message"></p>
+      <div id="player-cards" class="playingCards"></div>
+      <div id="dealer-cards" class="playingCards"></div>
     </div>
   </body>
 </html>

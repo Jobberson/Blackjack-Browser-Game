@@ -10,3 +10,7 @@ html{
 p{
   color: white;
 }
+
+.playingCards{
+  display: flex;
+}
