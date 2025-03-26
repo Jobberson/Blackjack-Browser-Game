@@ -102,9 +102,9 @@
     display: block;
     line-height: 1;
     text-align: left;
-}
+}/*
 .playingCards .card .rank {
-}
+}*/
 .playingCards .card .suit {
     line-height: .7;
 }

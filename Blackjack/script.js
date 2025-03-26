@@ -16,6 +16,7 @@ let canDrawOneMore = false;
 let hasStarted = false;
 let stood = false;
 let isGameDone = false;
+let hasBetted = false;
 
 const dealerCard = document.getElementById("cards-dealer");
 const dealerMax = document.getElementById("cards-maxSum");
@@ -35,7 +36,7 @@ function getRandomIntInclusive(min, max) {
   return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled); 
 }
 
-// Updated drawCards function now defers to createCardElement,
+// DrawCards function defers to createCardElement,
 // and for dealer draws we control whether to show the back.
 function drawCards(num, drawnArray, cardArray, isPlayer, showBack = false) {
   for (let i = 0; i < num; i++) {
@@ -55,7 +56,7 @@ function drawCards(num, drawnArray, cardArray, isPlayer, showBack = false) {
   }
 }
 
-// createCardElement now accepts a flag (showBack) to determine
+// createCardElement accepts a flag (showBack) to determine
 // whether to render the card as a back or as its front.
 function createCardElement(card, parentDiv, showBack) {
   const cardElement = document.createElement('div');
@@ -102,6 +103,7 @@ function getCardValue(cardValue) {
   return cardValue === 11 ? 11 : cardValue;
 }
 
+// Function calle when the gam ends
 function gameEnded(messageText) {
   message.textContent = messageText;
   isGameDone = true;
@@ -111,6 +113,7 @@ function gameEnded(messageText) {
   updateDealerScreen(true);
 }
 
+// Resets the game
 function reset() {
   hasStarted = false;
   isGameDone = false;
@@ -128,7 +131,7 @@ function resetPlayerVariables() {
   cardDrawn = [];
   canDrawOneMore = false;
   stood = false;
-  screen.textContent = "Cards Drawn: ";
+  screen.textContent = "Sum: ";
 }
 
 function resetDealerVariables() {
@@ -136,13 +139,10 @@ function resetDealerVariables() {
   dealerMaxSum = 0;
   dealerDrawn = [];
   stopDrawing = false;
-
-  dealerCard.textContent = "Dealer Cards: ";
-  dealerMax.textContent = "";
 }
 
 // This function reveals the dealer’s second card (the one showing back)
-// by removing the "back" class and rendering the card face.
+// by removing the "back" class and rendering the card front.
 function revealDealerSecondCard() {
   if (dealerDrawn.length >= 2) {
     // Assume the second dealer card is the second child in dealerCardsDiv
@@ -155,6 +155,7 @@ function revealDealerSecondCard() {
 
 // PLAYER FUNCTIONS
 
+// Starts the game
 function drawInitial() {
   if (hasStarted) return;
   
@@ -168,6 +169,7 @@ function drawInitial() {
   hasStarted = true;
 }
 
+// Draw more cards after the initial 2
 function drawMore() {
   if (!canDrawOneMore || isGameDone) return;
   
@@ -175,6 +177,7 @@ function drawMore() {
   checkPlayerSum();
 }
 
+// Checks the player sum for wins or losses
 function checkPlayerSum() {
   updatePlayerScreen();
   
@@ -189,17 +192,18 @@ function checkPlayerSum() {
   }
 }
 
+// Updates the sum on the player screen
 function updatePlayerScreen() {
-  screen.textContent = "Player sum: " + playerSum;
+  screen.textContent = "Sum: " + playerSum;
 }
 
+// stands and lets the dealer get cards
 function stand() {
   if (isGameDone || !hasStarted) return;
   
   stood = true;
   checkPlayerSum();
   
-  // Dealer draws additional cards until conditions are met.
   while (!stopDrawing && allCards.length > 0) {
     dealerDrawMore();
   }
@@ -217,7 +221,7 @@ function stand() {
 function dealerInitial() {
   dealerSum = 0;
   dealerMaxSum = getRandomIntInclusive(minSumValue, maxSumValue);
-  if (showDealerMaxSum) dealerMax.textContent = "Max Sum: " + dealerMaxSum;
+  //if (showDealerMaxSum) dealerMax.textContent = "Max Sum: " + dealerMaxSum;
   
   // Draw first dealer card (face up)
   drawCards(1, dealerDrawn, allCards, false, false);
@@ -261,6 +265,6 @@ function updateDealerMessage() {
 
 function updateDealerScreen(showAllCards) {
   if (dealerDrawn.length > 0) {
-    dealerCard.textContent = "Dealer Sum: " + dealerSum;
+    //dealerCard.textContent = "Dealer Sum: " + dealerSum;
   }
 }
