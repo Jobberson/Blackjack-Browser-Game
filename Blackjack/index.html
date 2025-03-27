@@ -1,24 +1,68 @@
+<!DOCTYPE html>
 <html>
-  <head>   
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="CardStyles/cards.css">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Blackjack Game</title>
+    <meta
+      name="description"
+      content="A simple blackjack card game with non-real bets"
+    />
+    <meta name="google" content="notranslate" />
+    <link rel="icon" sizes="192x192" href="Icons/icon.png" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="CardStyles/cards.css" />
     <script src="script.js" defer></script>
   </head>
   <body>
     <div id="Title">
       <h1>Blackjack</h1>
     </div>
+    <div>
+      <button onclick="betPopup()">Start</button>
+    </div>
+    <div id="Popups">
+      <div class="popup-div" id="gameOver-popup">
+        <div>
+          <h2 class="popup-text" onclick="gameOverPopup()">Game Over</h2>
+        </div>
+        <div>
+          <button class="popup-text" onclick="gameOverPopup()">
+            Try Again
+          </button>
+        </div>
+      </div>
+      <div class="popup-div" id="bet-popup">
+        <div>
+          <h3 class="popup-text">Place your bets</h3>
+        </div>
+        <div>
+          <button class="popup-text" onclick="addBet(this)">5</button>
+          <button class="popup-text" onclick="addBet(this)">10</button>
+          <button class="popup-text" onclick="addBet(this)">20</button>
+          <button class="popup-text" onclick="addBet(this)">50</button>
+          <button class="popup-text" onclick="addBet(this)">100</button>
+          <button class="popup-text" onclick="addBet(this)">500</button>
+          <button class="popup-text" onclick="bet()">Bet</button>
+          <button class="popup-text" onclick="resetBet()">Reset Bet</button>
+        </div>
+      </div>
+    </div>
     <div id="Game">
+      <div>
+        <p id="money-text">Money: 1000</p>
+        <p id="bet-text">Bet: 0</p>
+      </div>
       <button onclick="drawInitial()">Draw Cards</button>
       <button onclick="drawMore()">Draw 1+ Card</button>
       <button onclick="stand()">Stand</button>
       <button onclick="reset()">Reset</button>
-      <p id="cards-drawn">Cards drawn: </p>
-      <p id="cards-dealer">Dealer Card: </p>
-      <p id="cards-maxSum">Max Sum: </p>
+      <p id="cards-drawn">Cards drawn:</p>
+      <p id="cards-dealer">Dealer Card:</p>
+      <p id="cards-maxSum">Max Sum:</p>
       <p id="cards-message"></p>
       <div id="player-cards" class="playingCards"></div>
       <div id="dealer-cards" class="playingCards"></div>
     </div>
   </body>
-</html>w
+</html>

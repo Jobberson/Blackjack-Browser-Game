@@ -2,8 +2,12 @@ const screen = document.getElementById("cards-drawn");
 const message = document.getElementById("cards-message"); 
 const playerCardsDiv = document.getElementById("player-cards");
 const dealerCardsDiv = document.getElementById("dealer-cards");
+const dealerMax = document.getElementById("cards-maxSum");
+const dealerCard = document.getElementById("cards-dealer");
+const moneyText = document.getElementById("money-text");
+const betText = document.getElementById("bet-text");
 
-let playerSum = 0;
+// GAME VARIABLES
 const originalCards = [
   { value: 2, suit: 'spades' }, { value: 3, suit: 'spades' }, { value: 4, suit: 'spades' }, { value: 5, suit: 'spades' }, { value: 6, suit: 'spades' }, { value: 7, suit: 'spades' }, { value: 8, suit: 'spades' }, { value: 9, suit: 'spades' }, { value: 10, suit: 'spades' }, { value: 12, suit: 'spades' }, { value: 13, suit: 'spades' }, { value: 14, suit: 'spades' }, { value: 11, suit: 'spades' },
   { value: 2, suit: 'hearts' }, { value: 3, suit: 'hearts' }, { value: 4, suit: 'hearts' }, { value: 5, suit: 'hearts' }, { value: 6, suit: 'hearts' }, { value: 7, suit: 'hearts' }, { value: 8, suit: 'hearts' }, { value: 9, suit: 'hearts' }, { value: 10, suit: 'hearts' }, { value: 12, suit: 'hearts' }, { value: 13, suit: 'hearts' }, { value: 14, suit: 'hearts' }, { value: 11, suit: 'hearts' },
@@ -11,15 +15,19 @@ const originalCards = [
   { value: 2, suit: 'clubs' }, { value: 3, suit: 'clubs' }, { value: 4, suit: 'clubs' }, { value: 5, suit: 'clubs' }, { value: 6, suit: 'clubs' }, { value: 7, suit: 'clubs' }, { value: 8, suit: 'clubs' }, { value: 9, suit: 'clubs' }, { value: 10, suit: 'clubs' }, { value: 12, suit: 'clubs' }, { value: 13, suit: 'clubs' }, { value: 14, suit: 'clubs' }, { value: 11, suit: 'clubs' }
 ];
 let allCards = [...originalCards];
+let hasStarted = false;
+let hasBetted = false;
+let isGameDone = false;
+let currentMoney = 1000;
+let currentBet = 0;
+
+// PLAYER VARIABLES
+let playerSum = 0;
 let cardDrawn = [];
 let canDrawOneMore = false;
-let hasStarted = false;
 let stood = false;
-let isGameDone = false;
-let hasBetted = false;
 
-const dealerCard = document.getElementById("cards-dealer");
-const dealerMax = document.getElementById("cards-maxSum");
+// DEALER VARIABLES
 const showDealerMaxSum = true;
 const minSumValue = 15;
 const maxSumValue = 21;
@@ -27,6 +35,68 @@ let dealerMaxSum = 0;
 let dealerSum = 0;
 let dealerDrawn = [];
 let stopDrawing = false;
+
+// POPUP FUNCTIONS
+
+function betPopup() {
+  var popup = document.getElementById("bet-popup");
+  popup.classList.toggle("show");
+}
+
+function gameOverPopup() {
+  var popup = document.getElementById("gameOver-popup");
+  popup.classList.toggle("show");
+}
+
+// BET FUNCTIONS
+
+function addBet(button){
+  if(hasStarted || hasBetted) return;
+
+  let buttonValue = parseInt(button.textContent);
+  
+  currentBet += buttonValue;
+  updateBetText();
+}
+
+function resetBet(){
+  if(hasStarted || hasBetted) return;
+
+  currentBet = 0;
+  updateBetText();
+}
+
+// Confirms bet
+function bet(){
+  if(hasStarted || hasBetted) return;
+
+  currentMoney -= currentBet;
+  updateMoneyText();
+  hasBetted = true;
+  betPopup();
+}
+
+function betReward(result){
+  switch (result) {
+    case "won":
+      currentMoney += (currentBet * 2);
+      break;
+    case "lost":
+      break;
+    case "tied":
+      currentMoney += currentBet;
+      break;
+  }
+  updateMoneyText();
+}
+
+function updateBetText(){
+  betText.textContent = "Bet: " + currentBet;
+}
+
+function updateMoneyText(){
+  moneyText.textContent = "Money: " + currentMoney;
+}
 
 // HELPER FUNCTIONS
 
@@ -36,8 +106,6 @@ function getRandomIntInclusive(min, max) {
   return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled); 
 }
 
-// DrawCards function defers to createCardElement,
-// and for dealer draws we control whether to show the back.
 function drawCards(num, drawnArray, cardArray, isPlayer, showBack = false) {
   for (let i = 0; i < num; i++) {
     let randomIndex = getRandomIntInclusive(0, cardArray.length - 1);
@@ -45,7 +113,7 @@ function drawCards(num, drawnArray, cardArray, isPlayer, showBack = false) {
     
     if (isPlayer) {
       playerSum += getCardValue(card.value);
-      createCardElement(card, playerCardsDiv, false); // Always show player's cards front
+      createCardElement(card, playerCardsDiv, false);
     } else {
       dealerSum += getCardValue(card.value);
       createCardElement(card, dealerCardsDiv, showBack);
@@ -56,25 +124,25 @@ function drawCards(num, drawnArray, cardArray, isPlayer, showBack = false) {
   }
 }
 
-// createCardElement accepts a flag (showBack) to determine
-// whether to render the card as a back or as its front.
+// for dealer draws control whether to show the back of the card.
 function createCardElement(card, parentDiv, showBack) {
   const cardElement = document.createElement('div');
   
   if (showBack) {
     // Show card back
     cardElement.className = "card back";
-    // Store card details in data attributes for later reveal
+    // Store card details in data attributes for later reveal.
     cardElement.dataset.rank = getRank(card.value);
     cardElement.dataset.suit = card.suit;
   } else {
-    // Show the actual card face
+    // Show the actual card face.
     cardElement.className = `card rank-${getRank(card.value)} ${card.suit}`;
     cardElement.innerHTML = `<span class="rank">${getRank(card.value)}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
   }
   parentDiv.appendChild(cardElement);
 }
 
+// Gets card info
 function getSuitSymbol(suit) {
   const symbols = {
     spades: '&spades;',
@@ -103,11 +171,14 @@ function getCardValue(cardValue) {
   return cardValue === 11 ? 11 : cardValue;
 }
 
-// Function calle when the gam ends
-function gameEnded(messageText) {
+// Function called when the gam ends.
+function gameEnded(messageText, result) {
+  if (isGameDone) return;
+  
   message.textContent = messageText;
   isGameDone = true;
   stopDrawing = true;
+  betReward(result);
   revealDealerSecondCard();
   checkDealerSum();
   updateDealerScreen(true);
@@ -115,15 +186,18 @@ function gameEnded(messageText) {
 
 // Resets the game
 function reset() {
+  hasBetted = false;
+  currentBet = 0;
   hasStarted = false;
   isGameDone = false;
+  allCards = [...originalCards];
   message.textContent = "";
+  dealerCardsDiv.innerHTML = '';
+  playerCardsDiv.innerHTML = '';
   resetPlayerVariables();
   resetDealerVariables();
+  updateBetText();
   updateDealerScreen(false);
-  allCards = [...originalCards];
-  playerCardsDiv.innerHTML = '';
-  dealerCardsDiv.innerHTML = '';
 }
 
 function resetPlayerVariables() {
@@ -141,11 +215,11 @@ function resetDealerVariables() {
   stopDrawing = false;
 }
 
-// This function reveals the dealer’s second card (the one showing back)
+// This function reveals the dealer’s second card.
 // by removing the "back" class and rendering the card front.
 function revealDealerSecondCard() {
   if (dealerDrawn.length >= 2) {
-    // Assume the second dealer card is the second child in dealerCardsDiv
+    // Assume the second dealer card is the second child in dealerCardsDiv.
     let secondCardElement = dealerCardsDiv.children[1];
     let card = dealerDrawn[1];
     secondCardElement.className = `card rank-${getRank(card.value)} ${card.suit}`;
@@ -155,29 +229,29 @@ function revealDealerSecondCard() {
 
 // PLAYER FUNCTIONS
 
-// Starts the game
+// Starts the game.
 function drawInitial() {
-  if (hasStarted) return;
+  if (hasStarted || !hasBetted) return;
   
-  // Draw 2 cards for the player (all shown front)
+  // Draw 2 cards for the player (all shown front).
   drawCards(2, cardDrawn, allCards, true);
   checkPlayerSum();
   updatePlayerScreen();
   
-  // For dealer, draw the first card face up and second card as back
+  // For dealer, draw the first card face up and second card face down.
   dealerInitial();
   hasStarted = true;
 }
 
-// Draw more cards after the initial 2
+// Draw more cards after the initial 2.
 function drawMore() {
-  if (!canDrawOneMore || isGameDone) return;
+  if (!canDrawOneMore || isGameDone || !hasBetted) return;
   
   drawCards(1, cardDrawn, allCards, true);
   checkPlayerSum();
 }
 
-// Checks the player sum for wins or losses
+// Checks the player sum for to determine game state.
 function checkPlayerSum() {
   updatePlayerScreen();
   
@@ -185,19 +259,21 @@ function checkPlayerSum() {
     canDrawOneMore = true;
   } else {
     if (playerSum === 21 && dealerSum === 21) {
-      gameEnded("Oh, that's a tie!");
-    } else {
-      gameEnded(playerSum === 21 ? "Damn, you win" : "You Busted");
+      gameEnded("Oh, that's a tie!", "tied");
+    } else if (playerSum === 21){
+      gameEnded("Damn, you win", "won");
+    } else{
+      gameEnded("You Busted", "lost");
     }
   }
 }
 
-// Updates the sum on the player screen
+// Updates the sum on the player screen.
 function updatePlayerScreen() {
   screen.textContent = "Sum: " + playerSum;
 }
 
-// stands and lets the dealer get cards
+// Stands and lets the dealer get cards.
 function stand() {
   if (isGameDone || !hasStarted) return;
   
@@ -208,7 +284,6 @@ function stand() {
     dealerDrawMore();
   }
   
-  updateDealerScreen(true);
   checkDealerSum();
   
   stood = false;
@@ -221,7 +296,7 @@ function stand() {
 function dealerInitial() {
   dealerSum = 0;
   dealerMaxSum = getRandomIntInclusive(minSumValue, maxSumValue);
-  //if (showDealerMaxSum) dealerMax.textContent = "Max Sum: " + dealerMaxSum;
+  if (showDealerMaxSum) dealerMax.textContent = "Max Sum: " + dealerMaxSum;
   
   // Draw first dealer card (face up)
   drawCards(1, dealerDrawn, allCards, false, false);
@@ -229,7 +304,6 @@ function dealerInitial() {
   drawCards(1, dealerDrawn, allCards, false, true);
   
   checkDealerSum();
-  updateDealerScreen(false);
   hasStarted = true;
 }
 
@@ -242,12 +316,10 @@ function dealerDrawMore() {
 }
 
 function checkDealerSum() {
-  if (!isGameDone) updateDealerScreen(false);
-  
   if (dealerSum > 21 && playerSum < 22) {
-    gameEnded("Dealer Busted");
+      if (!isGameDone) gameEnded("Dealer Busted", "won");
   } else if (dealerSum > dealerMaxSum) {
-    stopDrawing = true;
+      stopDrawing = true;
   }
   
   if (stood) updateDealerMessage();
@@ -255,16 +327,14 @@ function checkDealerSum() {
 
 function updateDealerMessage() {
   if (dealerSum === playerSum) {
-    gameEnded("Oh, that's a tie!");
+      if (!isGameDone) gameEnded("Oh, that's a tie!", "tied");
   } else if (dealerSum > playerSum && dealerSum <= 21) {
-    gameEnded("Dealer Won");
+      if (!isGameDone) gameEnded("Dealer Won", "lost");
   } else {
-    gameEnded("You Won");
+      if (!isGameDone) gameEnded("You Won", "won");
   }
 }
 
-function updateDealerScreen(showAllCards) {
-  if (dealerDrawn.length > 0) {
-    //dealerCard.textContent = "Dealer Sum: " + dealerSum;
-  }
+function updateDealerScreen(showSum) {
+    dealerCard.textContent = showSum ? "Dealer Sum: " + dealerSum : "Dealer Sum";
 }
