@@ -38,6 +38,33 @@ let dealerSum = 0;
 let dealerDrawn = [];
 let stopDrawing = false;
 
+// SETTINGS
+
+function updateCardVisuals() {
+  const playerCardsContainer = document.getElementById("player-cards");
+  const dealerCardsContainer = document.getElementById("dealer-cards");
+  const options = ["fourColours", "faceImages", "simpleCards", "inText"];
+  
+  // Remove all existing visual classes from both containers
+  options.forEach(opt => {
+    playerCardsContainer.classList.remove(opt);
+    dealerCardsContainer.classList.remove(opt);
+  });
+  
+  // Add selected visual classes to both containers
+  options.forEach(option => {
+    const checkbox = document.getElementById(option + "Checkbox");
+    if (checkbox.checked) {
+      playerCardsContainer.classList.add(option);
+      dealerCardsContainer.classList.add(option);
+    }
+  });
+}
+
+function settings(){
+  openModal('settingsModal');
+}
+
 // POPUP FUNCTIONS
 
 function openModal(modalId) {
@@ -175,17 +202,16 @@ function drawCards(num, drawnArray, cardArray, isPlayer, showBack = false) {
 // for dealer draws control whether to show the back of the card.
 function createCardElement(card, parentDiv, showBack) {
   const cardElement = document.createElement('div');
-  
   if (showBack) {
-    // Show card back
     cardElement.className = "card back";
-    // Store card details in data attributes for later reveal.
     cardElement.dataset.rank = getRank(card.value);
     cardElement.dataset.suit = card.suit;
   } else {
-    // Show the actual card face.
     cardElement.className = `card rank-${getRank(card.value)} ${card.suit}`;
     cardElement.innerHTML = `<span class="rank">${getRank(card.value)}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
+    if (document.getElementById('faceImagesCheckbox').checked) {
+      cardElement.classList.add('faceImages');
+    }
   }
   parentDiv.appendChild(cardElement);
 }

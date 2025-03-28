@@ -20,6 +20,29 @@
     </div>
     <div>
       <button onclick="startGame()">Start</button>
+      <button onclick="settings()">Settings</button>
+    </div>
+    <div id="settingsModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal('settingsModal')">&times;</span>
+        <div>
+          <h3>Select settings</h3>
+        </div>
+        <div>
+          <label>
+            <input type="checkbox" id="fourColoursCheckbox" onclick="updateCardVisuals()"> Four Colours
+          </label>
+          <label>
+            <input type="checkbox" id="faceImagesCheckbox" onclick="updateCardVisuals()"> Face Images
+          </label>
+          <label>
+            <input type="checkbox" id="simpleCardsCheckbox" onclick="updateCardVisuals()"> Simple Cards
+          </label>
+          <label>
+            <input type="checkbox" id="inTextCheckbox" onclick="updateCardVisuals()"> In Text
+          </label>
+        </div>
+      </div>
     </div>
     <div id="betModal" class="modal">
       <div class="modal-content">
