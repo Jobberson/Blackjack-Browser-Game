@@ -7,6 +7,8 @@ const dealerCard = document.getElementById("cards-dealer");
 const moneyText = document.getElementById("money-text");
 const betText = document.getElementById("bet-text");
 
+const debug = false;
+
 // GAME VARIABLES
 const originalCards = [
   { value: 2, suit: 'spades' }, { value: 3, suit: 'spades' }, { value: 4, suit: 'spades' }, { value: 5, suit: 'spades' }, { value: 6, suit: 'spades' }, { value: 7, suit: 'spades' }, { value: 8, suit: 'spades' }, { value: 9, suit: 'spades' }, { value: 10, suit: 'spades' }, { value: 12, suit: 'spades' }, { value: 13, suit: 'spades' }, { value: 14, suit: 'spades' }, { value: 11, suit: 'spades' },
@@ -28,9 +30,9 @@ let canDrawOneMore = false;
 let stood = false;
 
 // DEALER VARIABLES
-const showDealerMaxSum = true;
-const minSumValue = 15;
-const maxSumValue = 21;
+const debugDealerMaxSum = false;
+const minSumValue = 17;
+const maxSumValue = 17;
 let dealerMaxSum = 0;
 let dealerSum = 0;
 let dealerDrawn = [];
@@ -38,14 +40,54 @@ let stopDrawing = false;
 
 // POPUP FUNCTIONS
 
+function openModal(modalId) {
+  var modal = document.getElementById(modalId);
+  modal.style.display = "block";
+  if(debug) console.log("Opened " + modalId + " modal");
+}
+
+function closeModal(modalId) {
+  var modal = document.getElementById(modalId);
+  modal.style.display = "none";
+  if(debug) console.log("Closed " + modalId + " modal");
+}
+
+// Function to close the modal when Escape key is pressed
+function closeModalOnEscape(event) {
+  if (event.key === "Escape") {
+    var modals = document.getElementsByClassName("modal");
+    for (var i = 0; i < modals.length; i++) {
+      if (modals[i].style.display === "block") {
+        modals[i].style.display = "none";
+      }
+    }
+  }
+}
+
+// Function to handle Enter key press
+function handleEnterKeyPress(event) {
+  if (event.key === "Enter") {
+    var betModal = document.getElementById("betModal");
+    var gameOverModal = document.getElementById("gameOverModal");
+
+    if (betModal.style.display === "block") {
+      bet(); // Place the bet if bet modal is visible
+    } else if (gameOverModal.style.display === "block") {
+      tryAgain(); // Run tryAgain function if game over modal is visible
+    }
+  }
+}
+
+// Add event listeners for Escape and Enter keys
+document.addEventListener("keydown", closeModalOnEscape);
+document.addEventListener("keydown", handleEnterKeyPress);
+
 function betPopup() {
-  var popup = document.getElementById("bet-popup");
-  popup.classList.toggle("show");
+  bet();
 }
 
 function gameOverPopup() {
-  var popup = document.getElementById("gameOver-popup");
-  popup.classList.toggle("show");
+  tryAgain();
 }
 
 // BET FUNCTIONS
@@ -55,8 +97,12 @@ function addBet(button){
 
   let buttonValue = parseInt(button.textContent);
   
+  if(buttonValue + currentBet > currentMoney) return;
+
   currentBet += buttonValue;
   updateBetText();
+
+  if(debug) console.log("Bet added: " + button.innerText);
 }
 
 function resetBet(){
@@ -68,12 +114,14 @@ function resetBet(){
 
 // Confirms bet
 function bet(){
-  if(hasStarted || hasBetted) return;
+  if(hasStarted || hasBetted || currentBet < 10) return;
 
   currentMoney -= currentBet;
   updateMoneyText();
   hasBetted = true;
-  betPopup();
+  closeModal('betModal');
+  drawInitial();
+  if(debug) console.log("Bet placed: " + currentBet);
 }
 
 function betReward(result){
@@ -91,11 +139,11 @@ function betReward(result){
 }
 
 function updateBetText(){
-  betText.textContent = "Bet: " + currentBet;
+  betText.textContent = "Bet: " + currentBet + "$";
 }
 
 function updateMoneyText(){
-  moneyText.textContent = "Money: " + currentMoney;
+  moneyText.textContent = "Money: " + currentMoney + "$";
 }
 
 // HELPER FUNCTIONS
@@ -112,10 +160,10 @@ function drawCards(num, drawnArray, cardArray, isPlayer, showBack = false) {
     let card = cardArray[randomIndex];
     
     if (isPlayer) {
-      playerSum += getCardValue(card.value);
+      playerSum += getCardValue(card.value, playerSum);
       createCardElement(card, playerCardsDiv, false);
     } else {
-      dealerSum += getCardValue(card.value);
+      dealerSum += getCardValue(card.value, dealerSum);
       createCardElement(card, dealerCardsDiv, showBack);
     }
     
@@ -164,11 +212,21 @@ function getRank(cardValue) {
   return ranks[cardValue] || cardValue;
 }
 
-function getCardValue(cardValue) {
+function getCardValue(cardValue, currentSum) {
   if (cardValue >= 12 && cardValue <= 14) {
     return 10;
   }
-  return cardValue === 11 ? 11 : cardValue;
+  if (cardValue === 11) {
+    // If adding 11 would cause a bust, count Ace as 1 instead
+    return (currentSum + 11 > 21) ? 1 : 11;
+  }
+  return cardValue;
+}
+
+function startGame()
+{
+  openModal('betModal');
+  reset();
 }
 
 // Function called when the gam ends.
@@ -182,6 +240,13 @@ function gameEnded(messageText, result) {
   revealDealerSecondCard();
   checkDealerSum();
   updateDealerScreen(true);
+}
+
+function tryAgain(){
+  reset();
+  currentMoney = 1000;
+  updateMoneyText();
+  closeModal('gameOverModal');
 }
 
 // Resets the game
@@ -261,9 +326,11 @@ function checkPlayerSum() {
     if (playerSum === 21 && dealerSum === 21) {
       gameEnded("Oh, that's a tie!", "tied");
     } else if (playerSum === 21){
-      gameEnded("Damn, you win", "won");
+      gameEnded("Damn, you won", "won");
     } else{
       gameEnded("You Busted", "lost");
+
+      if(currentMoney === 0) openModal('gameOverModal');
     }
   }
 }
@@ -296,7 +363,7 @@ function stand() {
 function dealerInitial() {
   dealerSum = 0;
   dealerMaxSum = getRandomIntInclusive(minSumValue, maxSumValue);
-  if (showDealerMaxSum) dealerMax.textContent = "Max Sum: " + dealerMaxSum;
+  if (debugDealerMaxSum) dealerMax.textContent = "Max Sum: " + dealerMaxSum;
   
   // Draw first dealer card (face up)
   drawCards(1, dealerDrawn, allCards, false, false);
@@ -329,12 +396,15 @@ function updateDealerMessage() {
   if (dealerSum === playerSum) {
       if (!isGameDone) gameEnded("Oh, that's a tie!", "tied");
   } else if (dealerSum > playerSum && dealerSum <= 21) {
-      if (!isGameDone) gameEnded("Dealer Won", "lost");
+      if (!isGameDone) {
+        gameEnded("Dealer Won", "lost");
+        if(currentMoney === 0) openModal('gameOverModal');
+      }
   } else {
       if (!isGameDone) gameEnded("You Won", "won");
   }
 }
 
 function updateDealerScreen(showSum) {
-    dealerCard.textContent = showSum ? "Dealer Sum: " + dealerSum : "Dealer Sum";
+    dealerCard.textContent = showSum ? "Dealer Sum: " + dealerSum : "";
 }

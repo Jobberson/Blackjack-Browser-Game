@@ -19,49 +19,54 @@
       <h1>Blackjack</h1>
     </div>
     <div>
-      <button onclick="betPopup()">Start</button>
+      <button onclick="startGame()">Start</button>
     </div>
-    <div id="Popups">
-      <div class="popup-div" id="gameOver-popup">
+    <div id="betModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal('betModal')">&times;</span>
         <div>
-          <h2 class="popup-text" onclick="gameOverPopup()">Game Over</h2>
+          <h3>Place your bets</h3>
+          <h5>Minimum of 10$</h5>
         </div>
         <div>
-          <button class="popup-text" onclick="gameOverPopup()">
-            Try Again
-          </button>
+          <div>
+            <button onclick="addBet(this)">5$</button>
+            <button onclick="addBet(this)">10$</button>
+            <button onclick="addBet(this)">20$</button>
+            <button onclick="addBet(this)">50$</button>
+            <button onclick="addBet(this)">100$</button>
+            <button onclick="addBet(this)">500$</button>
+          </div>
+          <div>
+            <button onclick="bet()">Bet</button>
+            <button onclick="resetBet()">Reset Bet</button>
+          </div>
         </div>
       </div>
-      <div class="popup-div" id="bet-popup">
-        <div>
-          <h3 class="popup-text">Place your bets</h3>
-        </div>
-        <div>
-          <button class="popup-text" onclick="addBet(this)">5</button>
-          <button class="popup-text" onclick="addBet(this)">10</button>
-          <button class="popup-text" onclick="addBet(this)">20</button>
-          <button class="popup-text" onclick="addBet(this)">50</button>
-          <button class="popup-text" onclick="addBet(this)">100</button>
-          <button class="popup-text" onclick="addBet(this)">500</button>
-          <button class="popup-text" onclick="bet()">Bet</button>
-          <button class="popup-text" onclick="resetBet()">Reset Bet</button>
-        </div>
+    </div>
+    <div id="gameOverModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal('gameOverModal')">&times;</span>
+        <h2>Game Over</h2>
+        <button onclick="gameOverPopup()">Try Again</button>
       </div>
     </div>
     <div id="Game">
       <div>
-        <p id="money-text">Money: 1000</p>
-        <p id="bet-text">Bet: 0</p>
+        <p id="money-text">Money: 1000$</p>
+        <p id="bet-text">Bet: 0$</p>
       </div>
-      <button onclick="drawInitial()">Draw Cards</button>
-      <button onclick="drawMore()">Draw 1+ Card</button>
+      <!-- <button onclick="drawInitial()">Draw Initial Cards</button> -->
+      <button onclick="drawMore()">Hit</button>
       <button onclick="stand()">Stand</button>
-      <button onclick="reset()">Reset</button>
-      <p id="cards-drawn">Cards drawn:</p>
-      <p id="cards-dealer">Dealer Card:</p>
-      <p id="cards-maxSum">Max Sum:</p>
+      <!-- <button onclick="reset()">Reset</button> -->
+      <p id="cards-drawn"></p>
+      <p id="cards-dealer"></p>
+      <!-- <p id="cards-maxSum">Max Sum:</p>  for debug purposes only -->
       <p id="cards-message"></p>
+      <p>Player Cards:</p>
       <div id="player-cards" class="playingCards"></div>
+      <p>Dealer Cards:</p>
       <div id="dealer-cards" class="playingCards"></div>
     </div>
   </body>
