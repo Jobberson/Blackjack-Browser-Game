@@ -255,7 +255,7 @@ function startGame()
   reset();
 }
 
-// Function called when the gam ends.
+// Function called when the game ends.
 function gameEnded(messageText, result) {
   if (isGameDone) return;
   
