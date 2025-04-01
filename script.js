@@ -70,6 +70,9 @@ let hasBetted = false;
 let isGameDone = false;
 let currentMoney = 1000;
 let currentBet = 0;
+let insuranceBet = 0;
+let hasInsurance = false;
+
 
 // PLAYER VARIABLES
 let playerSum = 0;
@@ -86,7 +89,58 @@ let dealerSum = 0;
 let dealerDrawn = [];
 let stopDrawing = false;
 
-// SETTINGS
+// INSURANCE FUNCTIONS
+
+function addInsuranceBet(amount) {
+  if (!hasInsurance) {
+    if (amount + insuranceBet > currentBet / 2) return;
+    insuranceBet += amount;
+    updateInsuranceText();
+    if (debug) console.log("Insurance bet added: " + amount);
+  }
+}
+
+function resetInsuranceBet() {
+  if (hasStarted && !hasInsurance) {
+    insuranceBet = 0;
+    updateInsuranceText();
+  }
+}
+
+function confirmInsuranceBet() {
+  if (hasStarted && !hasInsurance && insuranceBet > 0) {
+    currentMoney -= insuranceBet;
+    updateMoneyText();
+    hasInsurance = true;
+    closeModal("insuranceModal");
+    if (debug) console.log("Insurance bet placed: " + insuranceBet);
+  }
+}
+
+function updateInsuranceText() {
+  const insuranceText = document.getElementById("insurance-text");
+  insuranceText.textContent = "Insurance Bet: " + insuranceBet + "$";
+}
+
+function checkInsurance() {
+  if (dealerDrawn[0].value === 11) {
+    openModal("insuranceModal");
+  }
+}
+
+function resolveInsurance(dealerHasBlackjack) {
+  if (hasInsurance) {
+    if (dealerHasBlackjack) {
+      currentMoney += insuranceBet * 2;
+    }
+    insuranceBet = 0;
+    hasInsurance = false;
+    updateMoneyText();
+    updateInsuranceText();
+  }
+}
+
+// SETTINGS FUNCTIONS
 
 function updateCardVisuals() {
   const playerCardsContainer = document.getElementById("player-cards");
@@ -249,7 +303,7 @@ function drawCards(num, drawnArray, cardArray, isPlayer, showBack = false) {
 
 // for dealer draws control whether to show the back of the card.
 function createCardElement(card, parentDiv, showBack) {
-  const cardElement = document.createElement('div');
+  const cardElement = document.createElement("div");
   if (showBack) {
     cardElement.className = "card back";
     cardElement.dataset.rank = getRank(card.value);
@@ -258,13 +312,15 @@ function createCardElement(card, parentDiv, showBack) {
     const rank = getRank(card.value);
     const suit = card.suit;
     cardElement.className = `card rank-${rank} ${suit}`;
-    
+
     // Ensure the .suit span is created for face cards
-    cardElement.innerHTML = `<span class="rank">${rank}</span><span class="suit">${getSuitSymbol(suit)}</span>`;
+    cardElement.innerHTML = `<span class="rank">${rank}</span><span class="suit">${getSuitSymbol(
+      suit
+    )}</span>`;
     console.log(cardElement.innerHTML); // Log the HTML structure
-    if (rank === 'J' || rank === 'Q' || rank === 'K') {
-      if (document.getElementById('faceImagesCheckbox').checked) {
-        cardElement.classList.add('faceImages');
+    if (rank === "J" || rank === "Q" || rank === "K") {
+      if (document.getElementById("faceImagesCheckbox").checked) {
+        cardElement.classList.add("faceImages");
       }
     }
   }
@@ -320,6 +376,7 @@ function gameEnded(messageText, result) {
   revealDealerSecondCard();
   checkDealerSum();
   updateDealerScreen(true);
+  resolveInsurance(result === "lost" && dealerSum === 21);
 }
 
 function tryAgain() {
@@ -456,6 +513,7 @@ function dealerInitial() {
 
   checkDealerSum();
   hasStarted = true;
+  checkInsurance();
 }
 
 // Additional dealer cards (drawn when player stands) are shown face up.
