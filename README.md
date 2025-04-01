@@ -6,5 +6,3 @@ A simple blackjack card game
 - Better Visuals
 - Some QoL Changes
 - Insurance
-- Different card visuals
-- High contrast cards
