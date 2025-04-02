@@ -47,6 +47,8 @@
         <div>
           <h3>Place your bets</h3>
           <h5>Minimum of 10$</h5>
+          <p class="moneyText modalText" >Money: 1000$</p>
+          <p class="betText modalText" >Bet: 0$</p>
         </div>
         <div>
           <div>
@@ -68,8 +70,12 @@
       <div class="modal-content">
         <span class="close" onclick="closeModal('insuranceModal')">&times;</span>
         <div>
-          <h3>Place your insurance bet</h3>
+          <h3>Place your insurance bet (optional)</h3>
           <h5>Insurance pays 2:1</h5>
+          <h5>Max insurance is half the initial bet</h5>
+          <p class="moneyText modalText" >Money: 1000$</p>
+          <p class="betText modalText" >Bet: 0$</p>
+          <p class="insuranceText modalText">Insurance Bet: 0$</p>
         </div>
         <div>
           <div>
@@ -79,6 +85,7 @@
             <button type="button" onclick="addInsuranceBet(10)">10$</button>
             <button type="button" onclick="addInsuranceBet(20)">20$</button>
             <button type="button" onclick="addInsuranceBet(50)">50$</button>
+            <button type="button" onclick="addInsuranceBet('max')">Max Insurance</button>
           </div>
           <div>
             <button type="button" onclick="confirmInsuranceBet()">Confirm Insurance</button>
@@ -91,14 +98,15 @@
       <div class="modal-content">
         <span class="close" onclick="closeModal('gameOverModal')">&times;</span>
         <h2>Game Over</h2>
+        <p id="hand-wins" class="modalText">Hand wins: yo</p>
         <button type="button" onclick="gameOverPopup()">Try Again</button>
       </div>
     </div>
     <div id="Game">
       <div>
-        <p id="money-text">Money: 1000$</p>
-        <p id="bet-text">Bet: 0$</p>
-        <p id="insurance-text">Insurance Bet: 0$</p>
+        <p class="moneyText" >Money: 1000$</p>
+        <p class="betText" >Bet: 0$</p>
+        <p class="insuranceText">Insurance Bet: 0$</p>
       </div>
       <button type="button" onclick="drawMore()">Hit</button>
       <button type="button" onclick="stand()">Stand</button>

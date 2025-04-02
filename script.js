@@ -4,8 +4,10 @@ const playerCardsDiv = document.getElementById("player-cards");
 const dealerCardsDiv = document.getElementById("dealer-cards");
 const dealerMax = document.getElementById("cards-maxSum");
 const dealerCard = document.getElementById("cards-dealer");
-const moneyText = document.getElementById("money-text");
-const betText = document.getElementById("bet-text");
+const handWins = document.getElementById("hand-wins");
+const moneyText = document.querySelectorAll(".moneyText");
+const betText = document.querySelectorAll(".betText");
+const insuranceText = document.querySelectorAll(".insuranceText");
 
 const debug = false;
 
@@ -72,6 +74,7 @@ let currentMoney = 1000;
 let currentBet = 0;
 let insuranceBet = 0;
 let hasInsurance = false;
+let winsCounter = 0;
 
 
 // PLAYER VARIABLES
@@ -92,9 +95,15 @@ let stopDrawing = false;
 // INSURANCE FUNCTIONS
 
 function addInsuranceBet(amount) {
+  if(currentMoney < 5) return;
+
   if (!hasInsurance) {
-    if (amount + insuranceBet > currentBet / 2) return;
-    insuranceBet += amount;
+    if(amount === 'max'){
+      insuranceBet = currentBet / 2;
+    } else {
+      if (amount + insuranceBet > currentBet / 2) return;
+      insuranceBet += amount;
+    }
     updateInsuranceText();
     if (debug) console.log("Insurance bet added: " + amount);
   }
@@ -118,8 +127,9 @@ function confirmInsuranceBet() {
 }
 
 function updateInsuranceText() {
-  const insuranceText = document.getElementById("insurance-text");
-  insuranceText.textContent = "Insurance Bet: " + insuranceBet + "$";
+  insuranceText.forEach(element => {
+    element.textContent = "Insurance Bet: " + insuranceBet + "$";
+});
 }
 
 function checkInsurance() {
@@ -268,14 +278,26 @@ function betReward(result) {
 }
 
 function updateBetText() {
-  betText.textContent = "Bet: " + currentBet + "$";
+  betText.forEach(element => {
+    element.textContent = "Bet: " + currentBet + "$";
+});
 }
 
 function updateMoneyText() {
-  moneyText.textContent = "Money: " + currentMoney + "$";
+  moneyText.forEach(element => {
+    element.textContent = "Money: " + currentMoney + "$";
+});
 }
 
 // HELPER FUNCTIONS
+
+function countWins(){
+  winsCounter++;
+}
+
+function showWins(){
+  handWins.textContent = "Hand wins: " + winsCounter;
+}
 
 function getRandomIntInclusive(min, max) {
   const minCeiled = Math.ceil(min);
@@ -361,13 +383,19 @@ function getCardValue(cardValue, currentSum) {
 }
 
 function startGame() {
-  openModal("betModal");
-  reset();
+  if(hasStarted && isGameDone){
+    reset();
+    openModal("betModal");
+  } else if(!hasStarted){
+    openModal("betModal");
+  }
 }
 
 // Function called when the game ends.
 function gameEnded(messageText, result) {
   if (isGameDone) return;
+
+  if(result === "won") countWins();
 
   message.textContent = messageText;
   isGameDone = true;
@@ -390,7 +418,9 @@ function tryAgain() {
 function reset() {
   hasBetted = false;
   currentBet = 0;
+  insuranceBet = 0;
   hasStarted = false;
+  hasInsurance = false;
   isGameDone = false;
   allCards = [...originalCards];
   message.textContent = "";
@@ -471,7 +501,10 @@ function checkPlayerSum() {
     } else {
       gameEnded("You Busted", "lost");
 
-      if (currentMoney === 0) openModal("gameOverModal");
+      if (currentMoney < 10) {
+        showWins();
+        openModal("gameOverModal");
+      }
     }
   }
 }
