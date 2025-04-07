@@ -2,21 +2,48 @@ html {
   background: green;
 }
 
-#Title {
+.Title {
   text-align: center;
   font-size: 33px;
+}
+
+#gameTitle{
+  font-size: 23px;
 }
 
 p {
   color: white;
 }
 
-.modalText{
-  color: black;
+#mainMenu-div{
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mainMenu-buttons{
+  margin: 10px;
+  padding: 20px;
+  width: 200px;
+}
+
+.playingCards-div{
+  text-align: center;
 }
 
 .playingCards {
   display: flex;
+  justify-content: center;
+}
+
+#game-button{
+  margin: 0 auto;
+  padding: 15px 0;
+  width: 50%; 
+  text-align: center;
+  border: 1px solid black;
+  background: black;
+  /*opacity: 0.5; need to change how the opacity works*/
 }
 
 /* Modal styles */
@@ -38,7 +65,11 @@ p {
   margin: 15% auto; /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
+  width: 50%; /* Could be more or less, depending on screen size */
+}
+
+.modalText{
+  color: black;
 }
 
 .close {

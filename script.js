@@ -76,7 +76,6 @@ let insuranceBet = 0;
 let hasInsurance = false;
 let winsCounter = 0;
 
-
 // PLAYER VARIABLES
 let playerSum = 0;
 let cardDrawn = [];
@@ -95,10 +94,10 @@ let stopDrawing = false;
 // INSURANCE FUNCTIONS
 
 function addInsuranceBet(amount) {
-  if(currentMoney < 5) return;
+  if (currentMoney < 5) return;
 
   if (!hasInsurance) {
-    if(amount === 'max'){
+    if (amount === "max") {
       insuranceBet = currentBet / 2;
     } else {
       if (amount + insuranceBet > currentBet / 2) return;
@@ -127,9 +126,9 @@ function confirmInsuranceBet() {
 }
 
 function updateInsuranceText() {
-  insuranceText.forEach(element => {
+  insuranceText.forEach((element) => {
     element.textContent = "Insurance Bet: " + insuranceBet + "$";
-});
+  });
 }
 
 function checkInsurance() {
@@ -278,24 +277,24 @@ function betReward(result) {
 }
 
 function updateBetText() {
-  betText.forEach(element => {
+  betText.forEach((element) => {
     element.textContent = "Bet: " + currentBet + "$";
-});
+  });
 }
 
 function updateMoneyText() {
-  moneyText.forEach(element => {
+  moneyText.forEach((element) => {
     element.textContent = "Money: " + currentMoney + "$";
-});
+  });
 }
 
 // HELPER FUNCTIONS
 
-function countWins(){
+function countWins() {
   winsCounter++;
 }
 
-function showWins(){
+function showWins() {
   handWins.textContent = "Hand wins: " + winsCounter;
 }
 
@@ -383,19 +382,26 @@ function getCardValue(cardValue, currentSum) {
 }
 
 function startGame() {
-  if(hasStarted && isGameDone){
+  if (hasStarted && isGameDone) {
     reset();
     openModal("betModal");
-  } else if(!hasStarted){
+  } else if (!hasStarted) {
+    document.getElementById("mainMenu").style.display = "none";
+    document.getElementById("Game").style.display = "block";
     openModal("betModal");
   }
+}
+
+function menu(){
+  document.getElementById("mainMenu").style.display = "block";
+    document.getElementById("Game").style.display = "none";
 }
 
 // Function called when the game ends.
 function gameEnded(messageText, result) {
   if (isGameDone) return;
 
-  if(result === "won") countWins();
+  if (result === "won") countWins();
 
   message.textContent = messageText;
   isGameDone = true;
