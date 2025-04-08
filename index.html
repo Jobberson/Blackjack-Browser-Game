@@ -1,162 +1,321 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Blackjack Game</title>
-    <meta name="description" content="A simple blackjack card game with non-real bets" />
+    <meta
+      name="description"
+      content="A simple blackjack card game with non-real bets"
+    />
     <meta name="google" content="notranslate" />
     <link rel="icon" sizes="192x192" href="Icons/icon.png" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="CardStyles/cards.css" />
     <script src="script.js" defer></script>
-</head>
-<body>
+  </head>
+  <body>
     <div id="mainMenu">
-        <div class="title">
-            <h1>Blackjack ♠</h1>
-        </div>
-        <div id="mainMenuDiv">
-            <button class="buttons main-menu-buttons" type="button" onclick="startGame()">Start Game</button>
-            <button class="buttons main-menu-buttons" type="button" onclick="settings()">Settings</button>
-        </div>
+      <div class="title">
+        <h1>Blackjack ♠</h1>
+      </div>
+      <div id="mainMenuDiv">
+        <button
+          class="buttons main-menu-buttons"
+          type="button"
+          onclick="startGame()"
+        >
+          Start Game
+        </button>
+        <button
+          class="buttons main-menu-buttons"
+          type="button"
+          onclick="settings()"
+        >
+          Settings
+        </button>
+      </div>
     </div>
     <div id="settingsModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('settingsModal')">&times;</span>
-            <div>
-                <h3>Select settings</h3>
-            </div>
-            <div>
-                <label>
-                    <input type="checkbox" id="fourColoursCheckbox" onclick="updateCardVisuals()" />
-                    Four Colours
-                </label>
-                <label>
-                    <input type="checkbox" id="faceImagesCheckbox" onclick="updateCardVisuals()" />
-                    Face Images
-                </label>
-                <label>
-                    <input type="checkbox" id="simpleCardsCheckbox" onclick="updateCardVisuals()" />
-                    Simple Cards
-                </label>
-                <label>
-                    <input type="checkbox" id="inTextCheckbox" onclick="updateCardVisuals()" />
-                    In Text
-                </label>
-            </div>
-        </div>
-    </div>
-    <div id="betModal" class="modal">
-        <div class="modal-content">
-            <div>
-              <div id="betTitle">
-                <h3 class="modal-title">Place your bets</h3>
-                <h5 id="betMinText">Minimum of 10$</h5>
-              </div>
-              <p class="money-text modal-text">Money: 1000$</p>
-              <p class="bet-text modal-text">Bet: 0$</p>
-            </div>
-            <div>
-                <div id="addBetButtonsDiv">
-                    <button class="buttons add-bet-buttons" type="button" onclick="addBet(this)">5$</button>
-                    <button class="buttons add-bet-buttons" type="button" onclick="addBet(this)">10$</button>
-                    <button class="buttons add-bet-buttons" type="button" onclick="addBet(this)">20$</button>
-                    <button class="buttons add-bet-buttons" type="button" onclick="addBet(this)">50$</button>
-                    <button class="buttons add-bet-buttons" type="button" onclick="addBet(this)">100$</button>
-                    <button class="buttons add-bet-buttons" type="button" onclick="addBet(this)">500$</button>
-                </div>
-                <div id="confirmBetButtonsDiv">
-                    <button class="buttons confirm-bet-buttons" id="betButton" type="button" onclick="bet()">Bet</button>
-                    <button class="buttons confirm-bet-buttons" id="resetbetButton" type="button" onclick="resetBet()">Reset Bet</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="insuranceModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('insuranceModal')">&times;</span>
-            <div id="insuranceTexts">
-                <div id="insuranceTitle">
-                    <h3 class="modal-title">Place your insurance bet</h3>
-                    <h3 id="insuranceOptionalText">(optional)</h3>
-                </div>
-                <div id="insuranceDescription">
-                    <h5>Insurance pays 2:1</h5>
-                    <h5>Max insurance is half the initial bet</h5>
-                </div>
-                <div id="insuranceMoneyText">
-                    <p class="money-text modal-text">Money: 1000$</p>
-                    <p class="bet-text modal-text">Bet: 0$</p>
-                    <p class="insurance-text modal-text">Insurance Bet: 0$</p>
-                </div>
-            </div>
-            <div>
-                <div id="insuranceBetButtonsDiv">
-                    <button class="buttons insurance-bet-buttons" type="button" onclick="addInsuranceBet(5)">5$</button>
-                    <button class="buttons insurance-bet-buttons" type="button" onclick="addInsuranceBet(10)">10$</button>
-                    <button class="buttons insurance-bet-buttons" type="button" onclick="addInsuranceBet(20)">20$</button>
-                    <button class="buttons insurance-bet-buttons" type="button" onclick="addInsuranceBet(50)">50$</button>
-                    <button class="buttons insurance-bet-buttons" type="button" onclick="addInsuranceBet('max')">Max Insurance</button>
-                </div>
-                <div id="insuranceBetConfirmButtonsDiv">
-                    <button class="buttons insurance-bet-confirm-buttons" type="button" onclick="confirmInsuranceBet()">Confirm Insurance</button>
-                    <button class="buttons insurance-bet-confirm-buttons" type="button" onclick="resetInsuranceBet()">Reset Insurance</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="gameResultModal" class="modal">
-        <div id="gameResultModal" class="modal-content">
-            <span class="close" onclick="closeModal('gameResultModal')">&times;</span>
-          <div id="gameResultContent">
-            <h3 class="modal-title">Game Results</h3>
-            <p class="modal-text" id="cardsMessage"></p>
-            <div id="gameResultButtonsDiv">
-                <button class="buttons game-result-buttons" type="button" onclick="startGame()">Continue</button>
-                <button class="buttons game-result-buttons" type="button" onclick="menu()">Main Menu</button>
-            </div>
-          </div>
-        </div>
-    </div>
-    <div id="gameOverModal" class="modal">
-        <div class="modal-content">
-            <h3 class="modal-title">Game Over</h3>
-            <p id="handWins" class="modal-text">Hand wins: 0</p>
-            <div id="gameOverButtonsDiv">
-                <button class="buttons game-over-buttons" type="button" onclick="gameOverPopup()">Try Again</button>
-            </div>
-        </div>
-    </div>
-    <div id="game" style="display: none;">
-        <div class="title" id="gameTitle">
-            <h2>Blackjack ♠</h2>
+      <div class="modal-content">
+        <span class="close" onclick="closeModal('settingsModal')">&times;</span>
+        <div>
+          <h3>Select settings</h3>
         </div>
         <div>
-          <div id="gameTextBackground">
-            <div id="gameText">
-                <p class="money-text">Money: 1000$</p>
-                <p class="bet-text">Bet: 0$</p>
-                <p class="insurance-text">Insurance Bet: 0$</p>
-            </div>
-          </div>
-            <div id="gameButtonsDiv">
-                <button class="buttons game-buttons" id="hitButton" type="button" onclick="drawMore()">Hit</button>
-                <button class="buttons game-buttons" id="standButton" type="button" onclick="stand()">Stand</button>
-            </div>
-            <div class="playing-cards-div">
-                <div>
-                    <p>Your Cards:</p>
-                    <div id="playerCards" class="playing-cards"></div>
-                    <p id="cardsDrawn"></p>
-                </div>
-                <div>
-                    <p>Dealer Cards:</p>
-                    <div id="dealerCards" class="playing-cards"></div>
-                    <p id="cardsDealer"></p>
-                </div>
-            </div>
+          <label>
+            <input
+              type="checkbox"
+              id="fourColoursCheckbox"
+              onclick="updateCardVisuals()"
+            />
+            Four Colours
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              id="faceImagesCheckbox"
+              onclick="updateCardVisuals()"
+            />
+            Face Images
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              id="simpleCardsCheckbox"
+              onclick="updateCardVisuals()"
+            />
+            Simple Cards
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              id="inTextCheckbox"
+              onclick="updateCardVisuals()"
+            />
+            In Text
+          </label>
         </div>
+      </div>
     </div>
-</body>
+    <div id="betModal" class="modal">
+      <div class="modal-content">
+        <div>
+          <div id="betTitle">
+            <h3 class="modal-title">Place your bets</h3>
+            <h5 id="betMinText">Minimum of 10$</h5>
+          </div>
+          <p class="money-text modal-text">Money: 1000$</p>
+          <p class="bet-text modal-text">Bet: 0$</p>
+        </div>
+        <div>
+          <div id="addBetButtonsDiv">
+            <button
+              class="buttons add-bet-buttons"
+              type="button"
+              onclick="addBet(this)"
+            >
+              5$
+            </button>
+            <button
+              class="buttons add-bet-buttons"
+              type="button"
+              onclick="addBet(this)"
+            >
+              10$
+            </button>
+            <button
+              class="buttons add-bet-buttons"
+              type="button"
+              onclick="addBet(this)"
+            >
+              20$
+            </button>
+            <button
+              class="buttons add-bet-buttons"
+              type="button"
+              onclick="addBet(this)"
+            >
+              50$
+            </button>
+            <button
+              class="buttons add-bet-buttons"
+              type="button"
+              onclick="addBet(this)"
+            >
+              100$
+            </button>
+            <button
+              class="buttons add-bet-buttons"
+              type="button"
+              onclick="addBet(this)"
+            >
+              500$
+            </button>
+          </div>
+          <div id="confirmBetButtonsDiv">
+            <button
+              class="buttons confirm-bet-buttons"
+              id="betButton"
+              type="button"
+              onclick="bet()"
+            >
+              Bet
+            </button>
+            <button
+              class="buttons confirm-bet-buttons"
+              id="resetbetButton"
+              type="button"
+              onclick="resetBet()"
+            >
+              Reset Bet
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="insuranceModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal('insuranceModal')"
+          >&times;</span
+        >
+        <div id="insuranceTexts">
+          <div id="insuranceTitle">
+            <h3 class="modal-title">Place your insurance bet</h3>
+            <h3 id="insuranceOptionalText">(optional)</h3>
+          </div>
+          <div id="insuranceDescription">
+            <h5>Insurance pays 2:1</h5>
+            <h5>Max insurance is half the initial bet</h5>
+          </div>
+          <div id="insuranceMoneyText">
+            <p class="money-text modal-text">Money: 1000$</p>
+            <p class="bet-text modal-text">Bet: 0$</p>
+            <p class="insurance-text modal-text">Insurance Bet: 0$</p>
+          </div>
+        </div>
+        <div>
+          <div id="insuranceBetButtonsDiv">
+            <button
+              class="buttons insurance-bet-buttons"
+              type="button"
+              onclick="addInsuranceBet(5)"
+            >
+              5$
+            </button>
+            <button
+              class="buttons insurance-bet-buttons"
+              type="button"
+              onclick="addInsuranceBet(10)"
+            >
+              10$
+            </button>
+            <button
+              class="buttons insurance-bet-buttons"
+              type="button"
+              onclick="addInsuranceBet(20)"
+            >
+              20$
+            </button>
+            <button
+              class="buttons insurance-bet-buttons"
+              type="button"
+              onclick="addInsuranceBet(50)"
+            >
+              50$
+            </button>
+            <button
+              class="buttons insurance-bet-buttons"
+              type="button"
+              onclick="addInsuranceBet('max')"
+            >
+              Max Insurance
+            </button>
+          </div>
+          <div id="insuranceBetConfirmButtonsDiv">
+            <button
+              class="buttons insurance-bet-confirm-buttons"
+              type="button"
+              onclick="confirmInsuranceBet()"
+            >
+              Confirm Insurance
+            </button>
+            <button
+              class="buttons insurance-bet-confirm-buttons"
+              type="button"
+              onclick="resetInsuranceBet()"
+            >
+              Reset Insurance
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="gameResultModal" class="modal">
+      <div id="gameResultModal" class="modal-content">
+        <span class="close" onclick="closeModal('gameResultModal')"
+          >&times;</span
+        >
+        <div id="gameResultContent">
+          <h3 class="modal-title">Game Results</h3>
+          <p class="modal-text" id="cardsMessage"></p>
+          <div id="gameResultButtonsDiv">
+            <button
+              class="buttons game-result-buttons"
+              type="button"
+              onclick="startGame()"
+            >
+              Continue
+            </button>
+            <button
+              class="buttons game-result-buttons"
+              type="button"
+              onclick="menu()"
+            >
+              Main Menu
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="gameOverModal" class="modal">
+      <div class="modal-content">
+        <h3 class="modal-title">Game Over</h3>
+        <p id="handWins" class="modal-text">Hand wins: 0</p>
+        <div id="gameOverButtonsDiv">
+          <button
+            class="buttons game-over-buttons"
+            type="button"
+            onclick="gameOverPopup()"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="game" style="display: none;">
+      <div class="title" id="gameTitle">
+        <h2>Blackjack ♠</h2>
+      </div>
+      <div>
+        <div id="gameTextBackground">
+          <div id="gameText">
+            <p class="money-text">Money: 1000$</p>
+            <p class="bet-text">Bet: 0$</p>
+            <p class="insurance-text">Insurance Bet: 0$</p>
+          </div>
+        </div>
+        <div id="gameButtonsDiv">
+          <button
+            class="buttons game-buttons"
+            id="hitButton"
+            type="button"
+            onclick="drawMore()"
+          >
+            Hit
+          </button>
+          <button
+            class="buttons game-buttons"
+            id="standButton"
+            type="button"
+            onclick="stand()"
+          >
+            Stand
+          </button>
+        </div>
+        <div class="playing-cards-div">
+          <div>
+            <p>Your Cards:</p>
+            <div id="playerCards" class="playing-cards"></div>
+            <p id="cardsDrawn"></p>
+          </div>
+          <div>
+            <p>Dealer Cards:</p>
+            <div id="dealerCards" class="playing-cards"></div>
+            <p id="cardsDealer"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
