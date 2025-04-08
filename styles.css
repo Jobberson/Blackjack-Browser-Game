@@ -2,48 +2,175 @@ html {
   background: green;
 }
 
-.Title {
-  text-align: center;
-  font-size: 33px;
-}
-
-#gameTitle{
-  font-size: 23px;
-}
-
 p {
   color: white;
 }
 
-#mainMenu-div{
-  display:flex;
-  flex-direction: column;
-  align-items: center;
+.title {
+  text-align: center;
+  font-size: 33px;
 }
 
-.mainMenu-buttons{
-  margin: 10px;
-  padding: 20px;
-  width: 200px;
-}
-
-.playingCards-div{
+.playing-cards-div {
   text-align: center;
 }
 
-.playingCards {
+.playing-cards {
   display: flex;
   justify-content: center;
 }
 
-#game-button{
+.buttons {
+  border-radius: 8px;
+  border: 1px solid #a8a8a8;
+  font-size: 18px;
+}
+
+.main-menu-buttons {
+  margin: 10px;
+  padding: 20px;
+  width: 200px;
+  border: 0px;
+}
+
+.game-buttons{
+  height: 35px;
+  width: 80px;
+  font-size: 16px;
+  margin: 0 10px 10px 10px;
+}
+
+.add-bet-buttons{
+  margin: 5px;
+  padding: 3px 7px;
+  width: 60px;
+}
+
+.confirm-bet-buttons{
+  margin: 5px;
+  padding: 3px 7px;
+  width: 100px;
+}
+
+.game-result-buttons{
+  height:35px;
+  width:120px;
+}
+
+.insurance-bet-buttons{
+  margin: 5px;
+  padding: 3px 7px;
+}
+
+.insurance-bet-confirm-buttons{
+  margin: 5px;
+  padding: 3px 7px;
+  width: 175px;
+}
+
+.game-over-buttons{
+  margin: 5px;
+  padding: 3px 7px;
+  width: 100px;
+  height: 40px;
+  font-size: 16px;
+}
+
+#gameOverModal{
+  text-align: center;
+}
+
+#gameResultButtonsDiv{
+  margin: 30px 0 5px 0;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+#cardsMessage{
+  color:white;
+}
+
+#gameResultContent{
+  text-align:center;
+}
+
+#betButton{
+  background-color: #66ff61;
+}
+
+#resetbetButton{
+  background-color: #ff9494;
+}
+
+#betTitle{
+  display:flex;
+  align-items: center;
+}
+
+#betMinText{
+  margin: 0 0 0 10px;
+  padding: 8px 0 0 0;
+  font-size: 14px;
+}
+
+#mainMenuDiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#gameButtonsDiv {
   margin: 0 auto;
   padding: 15px 0;
-  width: 50%; 
+  width: 800px;
+  background: rgba(0, 0, 0, 0.28);
   text-align: center;
-  border: 1px solid black;
-  background: black;
-  /*opacity: 0.5; need to change how the opacity works*/
+}
+
+#gameTextBackground{
+  width: 800px;
+  background: rgba(0, 0, 0, 0.28);
+}
+
+#gameText {
+  padding: 0 200px 0 200px;
+  margin: 10px 10px 0 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+#gameTextBackground {
+  margin: auto;
+  width: 800px;
+  background: rgba(0, 0, 0, 0.28);
+}
+
+#hitButton{
+  background-color: #23f707;
+  border: 0px;
+}
+
+#standButton{
+  color: #f5f5f5;
+  background-color: #cc1818;
+  border: 0px;
+}
+
+#gameTitle {
+  font-size: 23px;
+}
+
+#insuranceTitle {
+  display: flex;
+  align-items: center;
+  margin: 0 0 -5% 0;
+}
+
+#insuranceOptionalText {
+  margin: 0 0 0 10px;
+  padding: 6px 0 0 0;
+  font-size: 15px;
 }
 
 /* Modal styles */
@@ -60,6 +187,7 @@ p {
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
+
 .modal-content {
   background-color: #fefefe;
   margin: 15% auto; /* 15% from the top and centered */
@@ -68,8 +196,13 @@ p {
   width: 50%; /* Could be more or less, depending on screen size */
 }
 
-.modalText{
+.modal-text {
   color: black;
+  font-size:19px;
+}
+
+.modal-title {
+  font-size: 25px;
 }
 
 .close {
@@ -85,3 +218,9 @@ p {
   text-decoration: none;
   cursor: pointer;
 }
+
+#gameResultModal {
+  background-color: rgba(0,0,0,0.45); 
+  color:white;
+}
+

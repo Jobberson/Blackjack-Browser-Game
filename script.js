@@ -1,13 +1,13 @@
-const screen = document.getElementById("cards-drawn");
-const message = document.getElementById("cards-message");
-const playerCardsDiv = document.getElementById("player-cards");
-const dealerCardsDiv = document.getElementById("dealer-cards");
-const dealerMax = document.getElementById("cards-maxSum");
-const dealerCard = document.getElementById("cards-dealer");
-const handWins = document.getElementById("hand-wins");
-const moneyText = document.querySelectorAll(".moneyText");
-const betText = document.querySelectorAll(".betText");
-const insuranceText = document.querySelectorAll(".insuranceText");
+const screen = document.getElementById("cardsDrawn");
+const message = document.getElementById("cardsMessage");
+const playerCardsDiv = document.getElementById("playerCards");
+const dealerCardsDiv = document.getElementById("dealerCards");
+const dealerMax = document.getElementById("cardsMaxSum");
+const dealerCard = document.getElementById("cardsDealer");
+const handWins = document.getElementById("handWins");
+const moneyText = document.querySelectorAll(".money-text");
+const betText = document.querySelectorAll(".bet-text");
+const insuranceText = document.querySelectorAll(".insurance-text");
 
 const debug = false;
 
@@ -152,8 +152,8 @@ function resolveInsurance(dealerHasBlackjack) {
 // SETTINGS FUNCTIONS
 
 function updateCardVisuals() {
-  const playerCardsContainer = document.getElementById("player-cards");
-  const dealerCardsContainer = document.getElementById("dealer-cards");
+  const playerCardsContainer = document.getElementById("playerCards");
+  const dealerCardsContainer = document.getElementById("dealerCards");
   const options = ["fourColours", "faceImages", "simpleCards", "inText"];
 
   // Remove all existing visual classes from both containers
@@ -387,14 +387,14 @@ function startGame() {
     openModal("betModal");
   } else if (!hasStarted) {
     document.getElementById("mainMenu").style.display = "none";
-    document.getElementById("Game").style.display = "block";
+    document.getElementById("game").style.display = "block";
     openModal("betModal");
   }
 }
 
 function menu(){
   document.getElementById("mainMenu").style.display = "block";
-    document.getElementById("Game").style.display = "none";
+    document.getElementById("game").style.display = "none";
 }
 
 // Function called when the game ends.
@@ -411,6 +411,7 @@ function gameEnded(messageText, result) {
   checkDealerSum();
   updateDealerScreen(true);
   resolveInsurance(result === "lost" && dealerSum === 21);
+  openModal('gameResultModal');
 }
 
 function tryAgain() {
