@@ -190,6 +190,10 @@ function closeModal(modalId) {
   if (debug) console.log("Closed " + modalId + " modal");
 }
 
+/*
+
+I'm taking down off to prevent softlocks
+
 // Function to close the modal when Escape key is pressed
 function closeModalOnEscape(event) {
   if (event.key === "Escape") {
@@ -219,6 +223,7 @@ function handleEnterKeyPress(event) {
 // Add event listeners for Escape and Enter keys
 document.addEventListener("keydown", closeModalOnEscape);
 document.addEventListener("keydown", handleEnterKeyPress);
+*/
 
 function betPopup() {
   bet();
