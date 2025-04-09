@@ -382,19 +382,17 @@ function getCardValue(cardValue, currentSum) {
 }
 
 function startGame() {
-  if (hasStarted && isGameDone) {
     reset();
     openModal("betModal");
-  } else if (!hasStarted) {
     document.getElementById("mainMenu").style.display = "none";
     document.getElementById("game").style.display = "block";
-    openModal("betModal");
-  }
+    closeModal("gameResultModal");
 }
 
 function menu(){
   document.getElementById("mainMenu").style.display = "block";
-    document.getElementById("game").style.display = "none";
+  document.getElementById("game").style.display = "none";
+  closeModal("gameResultModal");
 }
 
 // Function called when the game ends.
