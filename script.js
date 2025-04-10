@@ -81,6 +81,7 @@ let winsCounter = 0;
 let hasDoubled = false;
 let canDoubleDown = true;
 let canSurrender = true;
+let gameMode = "normal";
 
 // PLAYER VARIABLES
 let playerSum = 0;
@@ -96,6 +97,21 @@ let dealerMaxSum = 0;
 let dealerSum = 0;
 let dealerDrawn = [];
 let stopDrawing = false;
+
+// GAME MODE FUNCTIONS
+
+// gotta add a continue button and change the start button to be a new game button
+// in the new game button you can decide which game mode you want
+// it should always show in game what game mode you are in so you don't get lost
+
+function selectGameMode(selectedGameMode)
+{
+  // Game Modes
+  // - normal 
+  // - pontoon
+
+  gameMode = selectedGameMode;
+}
 
 // SURRENDER FUNCTIONS
 
@@ -534,15 +550,34 @@ function resetDealerVariables() {
 // by removing the "back" class and rendering the card front.
 function revealDealerSecondCard() {
   if (dealerDrawn.length >= 2) {
-    // Assume the second dealer card is the second child in dealerCardsDiv.
-    let secondCardElement = dealerCardsDiv.children[1];
-    let card = dealerDrawn[1];
-    secondCardElement.className = `card rank-${getRank(card.value)} ${
-      card.suit
-    }`;
-    secondCardElement.innerHTML = `<span class="rank">${getRank(
-      card.value
-    )}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
+
+    switch (gameMode) {
+      case "normal":
+        // Assume the second dealer card is the second child in dealerCardsDiv.
+        let secondCardElement = dealerCardsDiv.children[1];
+        let card = dealerDrawn[1];
+        secondCardElement.className = `card rank-${getRank(card.value)} ${
+          card.suit
+        }`;
+        secondCardElement.innerHTML = `<span class="rank">${getRank(
+          card.value
+        )}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
+        break;
+    
+      case "pontoon":
+        // try to show the face of both dealer's cards
+        for (let i = 0; i < 1; i++) {
+          let secondCardElement = dealerCardsDiv.children[i];
+          let card = dealerDrawn[i];
+          secondCardElement.className = `card rank-${getRank(card.value)} ${
+            card.suit
+          }`;
+          secondCardElement.innerHTML = `<span class="rank">${getRank(
+            card.value
+          )}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
+        }
+        break;
+    }
   }
 }
 
@@ -627,10 +662,18 @@ function dealerInitial() {
   dealerMaxSum = getRandomIntInclusive(minSumValue, maxSumValue);
   if (debugDealerMaxSum) dealerMax.textContent = "Max Sum: " + dealerMaxSum;
 
-  // Draw first dealer card (face up)
-  drawCards(1, dealerDrawn, allCards, false, false);
-  // Draw second dealer card (face down - back shown)
-  drawCards(1, dealerDrawn, allCards, false, true);
+  switch (gameMode) {
+    case "normal":
+      // Draw first dealer card (face up)
+      drawCards(1, dealerDrawn, allCards, false, false);
+      // Draw second dealer card (face down - back shown)
+      drawCards(1, dealerDrawn, allCards, false, true);
+      break;
+      case "pontoon":
+        // Draw 2 dealer cards (face down - back shown)
+        drawCards(2, dealerDrawn, allCards, false, true);
+      break;
+  }
 
   checkDealerSum();
   hasStarted = true;
