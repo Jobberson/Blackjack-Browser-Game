@@ -76,6 +76,17 @@ p {
   font-size: 16px;
 }
 
+#inGameSettingsButton{ 
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(0,0,0,0);
+  border-color: rgba(0,0,0,0);
+  font-size: 25px;
+  width:50px;
+  height:40px;
+}
+
 #gameOverModal{
   text-align: center;
 }
@@ -127,6 +138,14 @@ p {
   text-align: center;
 }
 
+#doubleButton{
+  width: 120px;
+}
+
+#surrenderButton{
+  width: 95px;
+}
+
 #gameTextBackground{
   width: 800px;
   background: rgba(0, 0, 0, 0.28);
@@ -171,6 +190,11 @@ p {
   margin: 0 0 0 10px;
   padding: 6px 0 0 0;
   font-size: 15px;
+}
+
+#settingsDiv{
+  display: flex;
+  justify-content: space-evenly;
 }
 
 /* Modal styles */

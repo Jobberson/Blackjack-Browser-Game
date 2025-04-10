@@ -8,6 +8,9 @@ const handWins = document.getElementById("handWins");
 const moneyText = document.querySelectorAll(".money-text");
 const betText = document.querySelectorAll(".bet-text");
 const insuranceText = document.querySelectorAll(".insurance-text");
+const doubleDownButton = document.getElementById("doubleButton");
+const hitButton = document.getElementById("hitButton");
+const surrenderButton = document.getElementById("surrenderButton");
 
 const debug = false;
 
@@ -75,6 +78,9 @@ let currentBet = 0;
 let insuranceBet = 0;
 let hasInsurance = false;
 let winsCounter = 0;
+let hasDoubled = false;
+let canDoubleDown = true;
+let canSurrender = true;
 
 // PLAYER VARIABLES
 let playerSum = 0;
@@ -90,6 +96,68 @@ let dealerMaxSum = 0;
 let dealerSum = 0;
 let dealerDrawn = [];
 let stopDrawing = false;
+
+// SURRENDER FUNCTIONS
+
+function surrender()
+{
+  if(!canSurrender) return;
+
+  currentBet = currentBet / 2;
+  currentMoney += currentBet;
+  updateBetText();
+  updateMoneyText();
+  gameEnded("You surrendered", "lost");
+}
+
+function disableButtonsSurrender()
+{
+  surrenderButton.disabled = true;
+}
+
+function enableButtonsSurrender()
+{
+  surrenderButton.disabled = false;
+}
+
+// DOUBLE DOWN FUNCTIONS
+
+function doubleDown()
+{
+  if(!canDoubleDown) return;
+
+  currentMoney -= currentBet;
+  currentBet = currentBet * 2;
+  hasDoubled = true;
+  updateBetText();
+  updateMoneyText();
+  drawCards(1, cardDrawn, allCards, true, false);
+  disableDoubleDownButton();
+  disableHitButton();
+}
+
+function disableHitButton()
+{
+  hitButton.disabled = true;
+}
+
+function enableHitButton()
+{
+  hitButton.disabled = false;
+}
+
+function disableDoubleDownButton() {
+  if(!hasDoubled) return;
+
+  doubleDownButton.disabled = true;
+}
+  
+function enableDoubleDownButton() {
+  if(!hasDoubled) return;
+
+  doubleDownButton.disabled = false;
+}
+  
 
 // INSURANCE FUNCTIONS
 
@@ -192,7 +260,9 @@ function closeModal(modalId) {
 
 /*
 
-I'm taking down off to prevent softlocks
+///
+/// I'm taking down off to prevent softlocks
+///
 
 // Function to close the modal when Escape key is pressed
 function closeModalOnEscape(event) {
@@ -440,6 +510,9 @@ function reset() {
   resetDealerVariables();
   updateBetText();
   updateDealerScreen(false);
+  enableDoubleDownButton();
+  enableHitButton();
+  enableButtonsSurrender();
 }
 
 function resetPlayerVariables() {
@@ -492,6 +565,11 @@ function drawInitial() {
 // Draw more cards after the initial 2.
 function drawMore() {
   if (!canDrawOneMore || isGameDone || !hasBetted) return;
+
+  if(canDoubleDown || canSurrender){
+    canDoubleDown = false;
+    canSurrender = false;
+  }
 
   drawCards(1, cardDrawn, allCards, true);
   checkPlayerSum();
