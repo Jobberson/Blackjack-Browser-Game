@@ -1,4 +1,3 @@
-
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -12,7 +11,10 @@
     <link rel="icon" sizes="192x192" href="Icons/icon.png" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="CardStyles/cards.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
     <script src="script.js" defer></script>
   </head>
   <body>
@@ -276,13 +278,9 @@
         <h2>Blackjack ♠</h2>
       </div>
       <!-- this is the settings button on the top right-->
-      <button 
-        id="inGameSettingsButton" 
-        type="button"
-        onclick="settings()"
-       >         
-        <i class="fas fa-cog"></i> 
-       </button>
+      <button id="inGameSettingsButton" type="button" onclick="settings()">
+        <i class="fas fa-cog"></i>
+      </button>
       <div>
         <div id="gameTextBackground">
           <div id="gameText">
@@ -291,39 +289,41 @@
             <p class="insurance-text">Insurance Bet: 0$</p>
           </div>
         </div>
-        <div id="gameButtonsDiv">
-          <button
-            class="buttons game-buttons"
-            id="hitButton"
-            type="button"
-            onclick="drawMore()"
-          >
-            Hit
-          </button>
-          <button
-            class="buttons game-buttons"
-            id="standButton"
-            type="button"
-            onclick="stand()"
-          >
-            Stand
-          </button>
-          <button
-            class="buttons game-buttons"
-            id="doubleButton"
-            type="button"
-            onclick="doubleDown()"
-          >
-            Double Down
-          </button>
-          <button
-          class="buttons game-buttons"
-            id="surrenderButton"
-            type="button"
-            onclick="surrender()"
-          >
-            Surrender
-          </button>
+        <div id="gameButtonsDivDiv">
+          <div id="gameButtonsDiv">
+            <button
+              class="buttons game-buttons"
+              id="hitButton"
+              type="button"
+              onclick="drawMore()"
+            >
+              Hit
+            </button>
+            <button
+              class="buttons game-buttons"
+              id="standButton"
+              type="button"
+              onclick="stand()"
+            >
+              Stand
+            </button>
+            <button
+              class="buttons game-buttons"
+              id="doubleButton"
+              type="button"
+              onclick="doubleDown()"
+            >
+              Double Down
+            </button>
+            <button
+              class="buttons game-buttons"
+              id="surrenderButton"
+              type="button"
+              onclick="surrender()"
+            >
+              Surrender
+            </button>
+          </div>
         </div>
         <div class="playing-cards-div">
           <div>

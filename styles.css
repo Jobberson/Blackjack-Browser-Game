@@ -130,12 +130,16 @@ p {
   align-items: center;
 }
 
+#gameButtonsDivDiv{
+  text-align: center;
+}
+
 #gameButtonsDiv {
+  display: flex;
   margin: 0 auto;
   padding: 15px 0;
   width: 800px;
   background: rgba(0, 0, 0, 0.28);
-  text-align: center;
 }
 
 #doubleButton{
@@ -248,3 +252,167 @@ p {
   color:white;
 }
 
+/* Responsive styles */
+@media (max-width: 1200px) {
+  .title {
+    font-size: 28px;
+  }
+
+  #gameText {
+    padding: 0 100px 0 100px;
+  }
+
+  #gameTextBackground {
+    width: 600px;
+  }
+
+  #gameButtonsDiv {
+    width: 600px;
+  }
+}
+
+@media (max-width: 768px) {
+  
+  .modal-content {
+    width: 80%; /* Adjust width for smaller screens */
+    margin: 20% auto; /* Adjust margin for better positioning */
+    padding: 15px; /* Adjust padding for smaller screens */
+  }
+  
+  .modal-text {
+    font-size: 16px; /* Adjust font size for smaller screens */
+  }
+
+  .modal-title {
+    font-size: 22px; /* Adjust font size for smaller screens */
+  }
+
+  .close {
+    font-size: 24px; /* Adjust font size for smaller screens */
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  #gameText {
+    padding: 0 50px 0 50px;
+    flex-direction: column;
+  }
+
+  #gameTextBackground {
+    width: 100%;
+  }
+
+  #gameButtonsDiv {
+    width: 100%;
+  }
+
+  .buttons {
+    font-size: 16px;
+  }
+
+  .main-menu-buttons {
+    width: 150px;
+  }
+
+  .game-buttons {
+    width: 70px;
+  }
+
+  .add-bet-buttons {
+    width: 50px;
+  }
+
+  .confirm-bet-buttons {
+    width: 80px;
+  }
+
+  .game-result-buttons {
+    width: 100px;
+  }
+
+  .insurance-bet-confirm-buttons {
+    width: 150px;
+  }
+
+  .game-over-buttons {
+    width: 80px;
+  }
+
+  #doubleButton {
+    width: 100px;
+  }
+
+  #surrenderButton {
+    width: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    width: 90%; /* Adjust width for very small screens */
+    margin: 25% auto; /* Adjust margin for better positioning */
+    padding: 10px; /* Adjust padding for very small screens */
+  }
+    
+  .modal-text {
+    font-size: 14px; /* Adjust font size for very small screens */
+  }
+    
+  .modal-title {
+    font-size: 20px; /* Adjust font size for very small screens */
+  }
+  
+  .close {
+    font-size: 20px; /* Adjust font size for very small screens */
+  }
+    
+  .title {
+    font-size: 20px;
+  }
+
+  #gameText {
+    padding: 0 20px 0 20px;
+  }
+
+  .buttons {
+    font-size: 14px;
+  }
+
+  .main-menu-buttons {
+    width: 120px;
+  }
+
+  .game-buttons {
+    width: 60px;
+  }
+
+  .add-bet-buttons {
+    width: 40px;
+  }
+
+  .confirm-bet-buttons {
+    width: 70px;
+  }
+
+  .game-result-buttons {
+    width: 80px;
+  }
+
+  .insurance-bet-confirm-buttons {
+    width: 120px;
+  }
+
+  .game-over-buttons {
+    width: 70px;
+  }
+
+  #doubleButton {
+    width: 80px;
+  }
+
+  #surrenderButton {
+    width: 70px;
+  }
+}
