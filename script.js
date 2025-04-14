@@ -150,6 +150,7 @@ function doubleDown()
   drawCards(1, cardDrawn, allCards, true, false);
   disableDoubleDownButton();
   disableHitButton();
+  stand();
 }
 
 function disableHitButton()
@@ -163,14 +164,10 @@ function enableHitButton()
 }
 
 function disableDoubleDownButton() {
-  if(!hasDoubled) return;
-
   doubleDownButton.disabled = true;
 }
   
 function enableDoubleDownButton() {
-  if(!hasDoubled) return;
-
   doubleDownButton.disabled = false;
 }
   
@@ -518,6 +515,8 @@ function reset() {
   hasStarted = false;
   hasInsurance = false;
   isGameDone = false;
+  canDoubleDown = true;
+  canSurrender = true;
   allCards = [...originalCards];
   message.textContent = "";
   dealerCardsDiv.innerHTML = "";
@@ -604,6 +603,8 @@ function drawMore() {
   if(canDoubleDown || canSurrender){
     canDoubleDown = false;
     canSurrender = false;
+    disableButtonsSurrender();
+    disableDoubleDownButton();
   }
 
   drawCards(1, cardDrawn, allCards, true);
