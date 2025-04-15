@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -26,9 +27,18 @@
         <button
           class="buttons main-menu-buttons"
           type="button"
-          onclick="startGame()"
+          onclick="startNewGame()"
         >
-          Start Game
+          New Game
+        </button>
+        <button
+          class="buttons main-menu-buttons"
+          id="continueGameButton"
+          type="button"
+          onclick="continueGame()"
+          disabled
+        >
+          Continue Game
         </button>
         <button
           class="buttons main-menu-buttons"
@@ -37,6 +47,29 @@
         >
           Settings
         </button>
+      </div>
+    </div>
+    <div id="modeSelectorModal" class="modal">
+      <div class="modal-content">
+        <div id="modeSelectorContent">
+          <h3 id="modeSelectorTitle" class="modal-title">Select a game mode</h3>
+          <div id="modeSelectorButtonsDiv">
+            <button
+              class="buttons mode-selector-buttons"
+              type="button"
+              onclick="selectGameMode('normal')"
+            >
+              Normal
+            </button>
+            <button
+              class="buttons mode-selector-buttons"
+              type="button"
+              onclick="selectGameMode('pontoon')"
+            >
+              Pontoon
+            </button>
+          </div>
+        </div>
       </div>
     </div>
     <div id="settingsModal" class="modal">
@@ -243,7 +276,7 @@
             <button
               class="buttons game-result-buttons"
               type="button"
-              onclick="startGame()"
+              onclick="continueGame()"
             >
               Continue
             </button>
@@ -270,6 +303,13 @@
           >
             Try Again
           </button>
+          <button
+            class="buttons game-over-buttons"
+            type="button"
+            onclick="menu()"
+          >
+            Main Menu
+          </button>
         </div>
       </div>
     </div>
@@ -277,10 +317,14 @@
       <div class="title" id="gameTitle">
         <h2>Blackjack ♠</h2>
       </div>
-      <!-- this is the settings button on the top right-->
-      <button id="inGameSettingsButton" type="button" onclick="settings()">
+      <!-- these are the buttons on the top right-->
+      <button class="in-game-top-buttons" id="inGameSettingsButton" type="button" onclick="settings()">
         <i class="fas fa-cog"></i>
       </button>
+      <button class="in-game-top-buttons" id="inGameHomeButton" type="button" onclick="menu()">
+        <i class="fas fa-home"></i>
+      </button>
+      <!---->
       <div>
         <div id="gameTextBackground">
           <div id="gameText">

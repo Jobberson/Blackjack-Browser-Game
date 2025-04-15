@@ -11,6 +11,7 @@ const insuranceText = document.querySelectorAll(".insurance-text");
 const doubleDownButton = document.getElementById("doubleButton");
 const hitButton = document.getElementById("hitButton");
 const surrenderButton = document.getElementById("surrenderButton");
+const continueGameButton = document.getElementById("continueGameButton");
 
 const debug = false;
 
@@ -82,6 +83,7 @@ let hasDoubled = false;
 let canDoubleDown = true;
 let canSurrender = true;
 let gameMode = "normal";
+let hasStartednewGame = false;
 
 // PLAYER VARIABLES
 let playerSum = 0;
@@ -104,19 +106,19 @@ let stopDrawing = false;
 // in the new game button you can decide which game mode you want
 // it should always show in game what game mode you are in so you don't get lost
 
-function selectGameMode(selectedGameMode)
-{
+function selectGameMode(selectedGameMode){
   // Game Modes
   // - normal 
   // - pontoon
 
   gameMode = selectedGameMode;
+  startGame();
+  closeModal("modeSelectorModal");
 }
 
 // SURRENDER FUNCTIONS
 
-function surrender()
-{
+function surrender(){
   if(!canSurrender) return;
 
   currentBet = currentBet / 2;
@@ -126,20 +128,17 @@ function surrender()
   gameEnded("You surrendered", "lost");
 }
 
-function disableButtonsSurrender()
-{
+function disableButtonsSurrender(){
   surrenderButton.disabled = true;
 }
 
-function enableButtonsSurrender()
-{
+function enableButtonsSurrender(){
   surrenderButton.disabled = false;
 }
 
 // DOUBLE DOWN FUNCTIONS
 
-function doubleDown()
-{
+function doubleDown(){
   if(!canDoubleDown) return;
 
   currentMoney -= currentBet;
@@ -153,13 +152,11 @@ function doubleDown()
   stand();
 }
 
-function disableHitButton()
-{
+function disableHitButton(){
   hitButton.disabled = true;
 }
 
-function enableHitButton()
-{
+function enableHitButton(){
   hitButton.disabled = false;
 }
 
@@ -197,12 +194,14 @@ function resetInsuranceBet() {
 }
 
 function confirmInsuranceBet() {
-  if (hasStarted && !hasInsurance && insuranceBet > 0) {
-    currentMoney -= insuranceBet;
-    updateMoneyText();
-    hasInsurance = true;
-    closeModal("insuranceModal");
-    if (debug) console.log("Insurance bet placed: " + insuranceBet);
+  if (hasStarted && !hasInsurance) {
+    if(insuranceBet > 0){
+      currentMoney -= insuranceBet;
+      updateMoneyText();
+      hasInsurance = true;
+      closeModal("insuranceModal");
+      if (debug) console.log("Insurance bet placed: " + insuranceBet);
+    } else if (debug) console.log("Insurance bet was 0");
   }
 }
 
@@ -469,7 +468,23 @@ function getCardValue(cardValue, currentSum) {
   return cardValue;
 }
 
-function startGame() {
+function startNewGame(){
+  if(!hasStartednewGame){
+    continueGameButton.disabled = false;
+    hasStartednewGame = true;
+  } 
+
+  hardReset();
+  openModal('modeSelectorModal');
+}
+
+function startGame(){
+  openModal("betModal");
+  document.getElementById("mainMenu").style.display = "none";
+  document.getElementById("game").style.display = "block";
+}
+
+function continueGame() {
     reset();
     openModal("betModal");
     document.getElementById("mainMenu").style.display = "none";
@@ -501,10 +516,9 @@ function gameEnded(messageText, result) {
 }
 
 function tryAgain() {
-  reset();
-  currentMoney = 1000;
-  updateMoneyText();
+  hardReset();
   closeModal("gameOverModal");
+  closeModal("gameResultModal")
 }
 
 // Resets the game
@@ -543,6 +557,15 @@ function resetDealerVariables() {
   dealerMaxSum = 0;
   dealerDrawn = [];
   stopDrawing = false;
+}
+
+function hardReset(){
+  currentMoney = 1000;
+  winsCounter = 0;
+  reset();
+  resetPlayerVariables();
+  resetDealerVariables();
+  updateMoneyText();
 }
 
 // This function reveals the dealer’s second card.
