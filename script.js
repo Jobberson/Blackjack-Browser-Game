@@ -587,17 +587,25 @@ function revealDealerSecondCard() {
         break;
     
       case "pontoon":
-        // try to show the face of both dealer's cards
-        for (let i = 0; i < 1; i++) {
-          let secondCardElement = dealerCardsDiv.children[i];
-          let card = dealerDrawn[i];
-          secondCardElement.className = `card rank-${getRank(card.value)} ${
-            card.suit
-          }`;
-          secondCardElement.innerHTML = `<span class="rank">${getRank(
-            card.value
-          )}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
-        }
+        // first card
+        let secondCardElement = dealerCardsDiv.children[0];
+        let card = dealerDrawn[0];
+        secondCardElement.className = `card rank-${getRank(card.value)} ${
+          card.suit
+        }`;
+        secondCardElement.innerHTML = `<span class="rank">${getRank(
+          card.value
+        )}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
+
+        // second card
+        let secondCardElement = dealerCardsDiv.children[1];
+        let card = dealerDrawn[1];
+        secondCardElement.className = `card rank-${getRank(card.value)} ${
+          card.suit
+        }`;
+        secondCardElement.innerHTML = `<span class="rank">${getRank(
+          card.value
+        )}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
         break;
     }
   }
