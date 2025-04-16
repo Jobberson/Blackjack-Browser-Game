@@ -568,46 +568,44 @@ function hardReset(){
   updateMoneyText();
 }
 
-// This function reveals the dealer’s second card.
+// These function reveals the dealer’s second card.
 // by removing the "back" class and rendering the card front.
+function updateCardElement(cardElement, card) {
+  cardElement.className = `card rank-${getRank(card.value)} ${card.suit}`;
+  cardElement.innerHTML = `<span class="rank">${getRank(card.value)}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
+  console.log("Updated card element:", cardElement);
+}
+
 function revealDealerSecondCard() {
   if (dealerDrawn.length >= 2) {
+    let secondCardElement = dealerCardsDiv.children[1];
+    let card = dealerDrawn[1];
 
-    switch (gameMode) {
-      case "normal":
-        // Assume the second dealer card is the second child in dealerCardsDiv.
-        let secondCardElement = dealerCardsDiv.children[1];
-        let card = dealerDrawn[1];
-        secondCardElement.className = `card rank-${getRank(card.value)} ${
-          card.suit
-        }`;
-        secondCardElement.innerHTML = `<span class="rank">${getRank(
-          card.value
-        )}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
-        break;
-    
-      case "pontoon":
-        // first card
-        let secondCardElement = dealerCardsDiv.children[0];
-        let card = dealerDrawn[0];
-        secondCardElement.className = `card rank-${getRank(card.value)} ${
-          card.suit
-        }`;
-        secondCardElement.innerHTML = `<span class="rank">${getRank(
-          card.value
-        )}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
+    if (secondCardElement && card) {
+      switch (gameMode) {
+        case "normal":
+          updateCardElement(secondCardElement, card);
+          break;
+        case "pontoon":
+          // first card
+          let firstCardElement = dealerCardsDiv.children[0];
+          let firstCard = dealerDrawn[0];
+          console.log("First card element:", firstCardElement);
+          console.log("First card data:", firstCard);
+          updateCardElement(firstCardElement, firstCard);
 
-        // second card
-        let secondCardElement = dealerCardsDiv.children[1];
-        let card = dealerDrawn[1];
-        secondCardElement.className = `card rank-${getRank(card.value)} ${
-          card.suit
-        }`;
-        secondCardElement.innerHTML = `<span class="rank">${getRank(
-          card.value
-        )}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
-        break;
+          // second card
+          console.log("Second card element:", secondCardElement);
+          console.log("Second card data:", card);
+          updateCardElement(secondCardElement, card);
+          break;
+        // Add other game modes if necessary
+      }
+    } else {
+      console.error("Second card element or card data is missing.");
     }
+  } else {
+    console.error("Dealer has not drawn enough cards.");
   }
 }
 
