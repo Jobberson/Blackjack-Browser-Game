@@ -518,7 +518,8 @@ function gameEnded(messageText, result) {
 function tryAgain() {
   hardReset();
   closeModal("gameOverModal");
-  closeModal("gameResultModal")
+  closeModal("gameResultModal");
+  openModal("betModal");
 }
 
 // Resets the game
