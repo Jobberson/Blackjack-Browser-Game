@@ -152,7 +152,7 @@ function selectGameMode(selectedGameMode){
   // - normal 
   // - pontoon
 
-  gameState.gameMode = selectedgameState.GameMode;
+  gameState.gameMode = selectedGameMode;
   startGame();
   closeModal("modeSelectorModal");
 }
@@ -366,7 +366,7 @@ function gameOverPopup() {
 function addBet(button) {
   if (gameState.hasStarted || gameState.hasBetted) return;
 
-  if(button.textContent = "All In"){
+  if(button.textContent === "All In"){
     gameState.currentBet = gameState.currentMoney;
     gameState.currentMoney = 0;
   } else{
@@ -685,7 +685,7 @@ function drawInitial() {
 
   // Draw 2 cards for the player (all shown front).
   drawCards(2, gameState.cardDrawn, gameState.allCards, true);
-  checkgameState.PlayerSum();
+  PlayerSum();
   updatePlayerScreen();
 
   // For dealer, draw the first card face up and second card face down.
