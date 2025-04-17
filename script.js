@@ -1,3 +1,4 @@
+//#region VARIABLES
 const screen = document.getElementById("cardsDrawn");
 const message = document.getElementById("cardsMessage");
 const playerCardsDiv = document.getElementById("playerCards");
@@ -15,7 +16,7 @@ const continueGameButton = document.getElementById("continueGameButton");
 
 const debug = false;
 
-// GAME VARIABLES
+//#region Game Variables
 const originalCards = [
   { value: 2, suit: "spades" },
   { value: 3, suit: "spades" },
@@ -70,37 +71,77 @@ const originalCards = [
   { value: 14, suit: "clubs" },
   { value: 11, suit: "clubs" },
 ];
-let allCards = [...originalCards];
-let hasStarted = false;
-let hasBetted = false;
-let isGameDone = false;
-let currentMoney = 1000;
-let currentBet = 0;
-let insuranceBet = 0;
-let hasInsurance = false;
-let winsCounter = 0;
-let hasDoubled = false;
-let canDoubleDown = true;
-let canSurrender = true;
-let gameMode = "normal";
-let hasStartednewGame = false;
 
-// PLAYER VARIABLES
-let playerSum = 0;
-let cardDrawn = [];
-let canDrawOneMore = false;
-let stood = false;
+let savedGameState;
 
-// DEALER VARIABLES
+let gameState = {
+  allCards: [...originalCards],
+  hasStarted: false,
+  hasBetted: false,
+  isGameDone: false,
+  currentMoney: 1000,
+  currentBet: 0,
+  insuranceBet: 0,
+  hasInsurance: false,
+  winsCounter: 0,
+  hasDoubled: false,
+  canDoubleDown: true,
+  canSurrender: true,
+  gameMode: "normal",
+  //#endregion
+
+  //#region Player Variables
+  playerSum: 0,
+  cardDrawn: [],
+  canDrawOneMore: false,
+  stood: false,
+  //#endregion
+
+  //#region Dealer Variables
+  dealerMaxSum: 0,
+  dealerSum: 0,
+  dealerDrawn: [],
+  stopDrawing: false
+}
+
 const debugDealerMaxSum = false;
 const minSumValue = 17;
 const maxSumValue = 17;
-let dealerMaxSum = 0;
-let dealerSum = 0;
-let dealerDrawn = [];
-let stopDrawing = false;
+//#endregion
+//#endregion
 
-// GAME MODE FUNCTIONS
+//#region SAVE GAME 
+function saveGame() {
+  localStorage.setItem('blackjackGameState', JSON.stringify(gameState));
+  alert('Game saved!');
+}
+
+function loadGame() {
+  savedGameState = localStorage.getItem('blackjackGameState');
+  if (savedGameState) {
+    gameState = JSON.parse(savedGameState);
+    alert('Game loaded!');
+    continueGameButton.disabled = false;
+    if(debug) console.log(gameState);
+  } else {
+    alert('No saved game found.');
+    continueGameButton.disabled = true;
+  }
+}
+
+function clearAllLocalStorage() {
+  localStorage.clear();
+}
+
+function loadGameOnWindowLoad(){
+  window.onload = loadGame;
+}
+
+loadGameOnWindowLoad();
+
+//#endregion
+
+//#region GAME MODE 
 
 // gotta add a continue button and change the start button to be a new game button
 // in the new game button you can decide which game mode you want
@@ -111,18 +152,19 @@ function selectGameMode(selectedGameMode){
   // - normal 
   // - pontoon
 
-  gameMode = selectedGameMode;
+  gameState.gameMode = selectedgameState.GameMode;
   startGame();
   closeModal("modeSelectorModal");
 }
+//#endregion
 
-// SURRENDER FUNCTIONS
+//#region SURRENDER 
 
 function surrender(){
-  if(!canSurrender) return;
+  if(!gameState.canSurrender) return;
 
-  currentBet = currentBet / 2;
-  currentMoney += currentBet;
+  gameState.currentBet = gameState.currentBet / 2;
+  gameState.currentMoney += gameState.currentBet;
   updateBetText();
   updateMoneyText();
   gameEnded("You surrendered", "lost");
@@ -135,18 +177,19 @@ function disableButtonsSurrender(){
 function enableButtonsSurrender(){
   surrenderButton.disabled = false;
 }
+//#endregion
 
-// DOUBLE DOWN FUNCTIONS
+//#region DOUBLE DOWN 
 
 function doubleDown(){
-  if(!canDoubleDown) return;
+  if(!gameState.canDoubleDown) return;
 
-  currentMoney -= currentBet;
-  currentBet = currentBet * 2;
-  hasDoubled = true;
+  gameState.currentMoney -= gameState.currentBet;
+  gameState.currentBet = gameState.currentBet * 2;
+  gameState.hasDoubled = true;
   updateBetText();
   updateMoneyText();
-  drawCards(1, cardDrawn, allCards, true, false);
+  drawCards(1, gameState.cardDrawn, gameState.allCards, true, false);
   disableDoubleDownButton();
   disableHitButton();
   stand();
@@ -167,19 +210,19 @@ function disableDoubleDownButton() {
 function enableDoubleDownButton() {
   doubleDownButton.disabled = false;
 }
-  
+//#endregion
 
-// INSURANCE FUNCTIONS
+//#region INSURANCE 
 
 function addInsuranceBet(amount) {
-  if (currentMoney < 5) return;
+  if (gameState.currentMoney < 5) return;
 
-  if (!hasInsurance) {
+  if (!gameState.hasInsurance) {
     if (amount === "max") {
-      insuranceBet = currentBet / 2;
+      gameState.insuranceBet = gameState.currentBet / 2;
     } else {
-      if (amount + insuranceBet > currentBet / 2) return;
-      insuranceBet += amount;
+      if (amount + gameState.insuranceBet > gameState.currentBet / 2) return;
+      gameState.insuranceBet += amount;
     }
     updateInsuranceText();
     if (debug) console.log("Insurance bet added: " + amount);
@@ -187,49 +230,50 @@ function addInsuranceBet(amount) {
 }
 
 function resetInsuranceBet() {
-  if (hasStarted && !hasInsurance) {
-    insuranceBet = 0;
+  if (gameState.hasStarted && !gameState.hasInsurance) {
+    gameState.insuranceBet = 0;
     updateInsuranceText();
   }
 }
 
 function confirmInsuranceBet() {
-  if (hasStarted && !hasInsurance) {
-    if(insuranceBet > 0){
-      currentMoney -= insuranceBet;
+  if (gameState.hasStarted && !gameState.hasInsurance) {
+    if(gameState.insuranceBet > 0){
+      gameState.currentMoney -= gameState.insuranceBet;
       updateMoneyText();
-      hasInsurance = true;
+      gameState.hasInsurance = true;
       closeModal("insuranceModal");
-      if (debug) console.log("Insurance bet placed: " + insuranceBet);
+      if (debug) console.log("Insurance bet placed: " + gameState.insuranceBet);
     } else if (debug) console.log("Insurance bet was 0");
   }
 }
 
 function updateInsuranceText() {
   insuranceText.forEach((element) => {
-    element.textContent = "Insurance Bet: " + insuranceBet + "$";
+    element.textContent = "Insurance Bet: " + gameState.insuranceBet + "$";
   });
 }
 
 function checkInsurance() {
-  if (dealerDrawn[0].value === 11) {
+  if (gameState.dealerDrawn[0].value === 11) {
     openModal("insuranceModal");
   }
 }
 
 function resolveInsurance(dealerHasBlackjack) {
-  if (hasInsurance) {
+  if (gameState.hasInsurance) {
     if (dealerHasBlackjack) {
-      currentMoney += insuranceBet * 2;
+      gameState.currentMoney += gameState.insuranceBet * 2;
     }
-    insuranceBet = 0;
-    hasInsurance = false;
+    gameState.insuranceBet = 0;
+    gameState.hasInsurance = false;
     updateMoneyText();
     updateInsuranceText();
   }
 }
+//#endregion
 
-// SETTINGS FUNCTIONS
+//#region SETTINGS 
 
 function updateCardVisuals() {
   const playerCardsContainer = document.getElementById("playerCards");
@@ -255,8 +299,9 @@ function updateCardVisuals() {
 function settings() {
   openModal("settingsModal");
 }
+//#endregion
 
-// POPUP FUNCTIONS
+//#region POPUP 
 
 function openModal(modalId) {
   var modal = document.getElementById(modalId);
@@ -314,50 +359,57 @@ function betPopup() {
 function gameOverPopup() {
   tryAgain();
 }
+//#endregion
 
-// BET FUNCTIONS
+//#region BET 
 
 function addBet(button) {
-  if (hasStarted || hasBetted) return;
+  if (gameState.hasStarted || gameState.hasBetted) return;
 
-  let buttonValue = parseInt(button.textContent);
-
-  if (buttonValue + currentBet > currentMoney) return;
-
-  currentBet += buttonValue;
+  if(button.textContent = "All In"){
+    gameState.currentBet = gameState.currentMoney;
+    gameState.currentMoney = 0;
+  } else{
+    let buttonValue = parseInt(button.textContent);
+    
+    if (buttonValue + gameState.currentBet > gameState.currentMoney) return;
+    
+    gameState.currentBet += buttonValue;
+  }
+  
   updateBetText();
 
   if (debug) console.log("Bet added: " + button.innerText);
 }
 
 function resetBet() {
-  if (hasStarted || hasBetted) return;
+  if (gameState.hasStarted || gameState.hasBetted) return;
 
-  currentBet = 0;
+  gameState.currentBet = 0;
   updateBetText();
 }
 
 // Confirms bet
 function bet() {
-  if (hasStarted || hasBetted || currentBet < 10) return;
+  if (gameState.hasStarted || gameState.hasBetted || gameState.currentBet < 10) return;
 
-  currentMoney -= currentBet;
+  gameState.currentMoney -= gameState.currentBet;
   updateMoneyText();
-  hasBetted = true;
+  gameState.hasBetted = true;
   closeModal("betModal");
   drawInitial();
-  if (debug) console.log("Bet placed: " + currentBet);
+  if (debug) console.log("Bet placed: " + gameState.currentBet);
 }
 
 function betReward(result) {
   switch (result) {
     case "won":
-      currentMoney += currentBet * 2;
+      gameState.currentMoney += gameState.currentBet * 2;
       break;
     case "lost":
       break;
     case "tied":
-      currentMoney += currentBet;
+      gameState.currentMoney += gameState.currentBet;
       break;
   }
   updateMoneyText();
@@ -365,17 +417,18 @@ function betReward(result) {
 
 function updateBetText() {
   betText.forEach((element) => {
-    element.textContent = "Bet: " + currentBet + "$";
+    element.textContent = "Bet: " + gameState.currentBet + "$";
   });
 }
 
 function updateMoneyText() {
   moneyText.forEach((element) => {
-    element.textContent = "Money: " + currentMoney + "$";
+    element.textContent = "Money: " + gameState.currentMoney + "$";
   });
 }
+//#endregion
 
-// HELPER FUNCTIONS
+//#region HELPER 
 function gameOver(){
   showWins();
   openModal("gameOverModal");
@@ -383,17 +436,17 @@ function gameOver(){
 
 function checkMoney()
 {
-  if(currentMoney < 10){
+  if(gameState.currentMoney < 10){
     gameOver();
   }
 }
 
 function countWins() {
-  winsCounter++;
+  gameState.winsCounter++;
 }
 
 function showWins() {
-  handWins.textContent = "Hand wins: " + winsCounter;
+  handWins.textContent = "Hand wins: " + gameState.winsCounter;
 }
 
 function getRandomIntInclusive(min, max) {
@@ -408,10 +461,10 @@ function drawCards(num, drawnArray, cardArray, isPlayer, showBack = false) {
     let card = cardArray[randomIndex];
 
     if (isPlayer) {
-      playerSum += getCardValue(card.value, playerSum);
+      gameState.playerSum += getCardValue(card.value, gameState.playerSum);
       createCardElement(card, playerCardsDiv, false);
     } else {
-      dealerSum += getCardValue(card.value, dealerSum);
+      gameState.dealerSum += getCardValue(card.value, gameState.dealerSum);
       createCardElement(card, dealerCardsDiv, showBack);
     }
 
@@ -480,10 +533,9 @@ function getCardValue(cardValue, currentSum) {
 }
 
 function startNewGame(){
-  if(!hasStartednewGame){
+  if(continueGameButton.disabled === true){
     continueGameButton.disabled = false;
-    hasStartednewGame = true;
-  } 
+  }
 
   hardReset();
   openModal('modeSelectorModal');
@@ -507,22 +559,24 @@ function menu(){
   document.getElementById("mainMenu").style.display = "block";
   document.getElementById("game").style.display = "none";
   closeModal("gameResultModal");
+  if(!isGameDone) saveGame();
+  else clearAllLocalStorage()
 }
 
 // Function called when the game ends.
 function gameEnded(messageText, result) {
-  if (isGameDone) return;
+  if (gameState.isGameDone) return;
 
   if (result === "won") countWins();
 
   message.textContent = messageText;
-  isGameDone = true;
-  stopDrawing = true;
+  gameState.isGameDone = true;
+  gameState.stopDrawing = true;
   betReward(result);
   revealDealerSecondCard();
-  checkDealerSum();
+  checkgameState.DealerSum();
   updateDealerScreen(true);
-  resolveInsurance(result === "lost" && dealerSum === 21);
+  resolveInsurance(result === "lost" && gameState.dealerSum === 21);
   openModal('gameResultModal');
 }
 
@@ -535,15 +589,15 @@ function tryAgain() {
 
 // Resets the game
 function reset() {
-  hasBetted = false;
-  currentBet = 0;
-  insuranceBet = 0;
-  hasStarted = false;
-  hasInsurance = false;
-  isGameDone = false;
-  canDoubleDown = true;
-  canSurrender = true;
-  allCards = [...originalCards];
+  gameState.hasBetted = false;
+  gameState.currentBet = 0;
+  gameState.insuranceBet = 0;
+  gameState.hasStarted = false;
+  gameState.hasInsurance = false;
+  gameState.isGameDone = false;
+  gameState.canDoubleDown = true;
+  gameState.canSurrender = true;
+  gameState.allCards = [...originalCards];
   message.textContent = "";
   dealerCardsDiv.innerHTML = "";
   playerCardsDiv.innerHTML = "";
@@ -557,23 +611,23 @@ function reset() {
 }
 
 function resetPlayerVariables() {
-  playerSum = 0;
-  cardDrawn = [];
-  canDrawOneMore = false;
-  stood = false;
+  gameState.playerSum = 0;
+  gameState.cardDrawn = [];
+  gameState.canDrawOneMore = false;
+  gameState.stood = false;
   screen.textContent = "Sum: ";
 }
 
 function resetDealerVariables() {
-  dealerSum = 0;
-  dealerMaxSum = 0;
-  dealerDrawn = [];
-  stopDrawing = false;
+  gameState.dealerSum = 0;
+  gameState.dealerMaxSum = 0;
+  gameState.dealerDrawn = [];
+  gameState.stopDrawing = false;
 }
 
 function hardReset(){
-  currentMoney = 1000;
-  winsCounter = 0;
+  gameState.currentMoney = 1000;
+  gameState.winsCounter = 0;
   reset();
   resetPlayerVariables();
   resetDealerVariables();
@@ -589,19 +643,19 @@ function updateCardElement(cardElement, card) {
 }
 
 function revealDealerSecondCard() {
-  if (dealerDrawn.length >= 2) {
+  if (gameState.dealerDrawn.length >= 2) {
     let secondCardElement = dealerCardsDiv.children[1];
-    let card = dealerDrawn[1];
+    let card = gameState.dealerDrawn[1];
 
     if (secondCardElement && card) {
-      switch (gameMode) {
+      switch (gameState.gameMode) {
         case "normal":
           updateCardElement(secondCardElement, card);
           break;
         case "pontoon":
           // first card
           let firstCardElement = dealerCardsDiv.children[0];
-          let firstCard = dealerDrawn[0];
+          let firstCard = gameState.dealerDrawn[0];
           console.log("First card element:", firstCardElement);
           console.log("First card data:", firstCard);
           updateCardElement(firstCardElement, firstCard);
@@ -620,48 +674,49 @@ function revealDealerSecondCard() {
     console.error("Dealer has not drawn enough cards.");
   }
 }
+//#endregion
 
-// PLAYER FUNCTIONS
+//#region PLAYER 
 
 // Starts the game.
 function drawInitial() {
-  if (hasStarted || !hasBetted) return;
+  if (gameState.hasStarted || !gameState.hasBetted) return;
 
   // Draw 2 cards for the player (all shown front).
-  drawCards(2, cardDrawn, allCards, true);
-  checkPlayerSum();
+  drawCards(2, gameState.cardDrawn, gameState.allCards, true);
+  checkgameState.PlayerSum();
   updatePlayerScreen();
 
   // For dealer, draw the first card face up and second card face down.
   dealerInitial();
-  hasStarted = true;
+  gameState.hasStarted = true;
 }
 
 // Draw more cards after the initial 2.
 function drawMore() {
-  if (!canDrawOneMore || isGameDone || !hasBetted) return;
+  if (!gameState.canDrawOneMore || gameState.isGameDone || !gameState.hasBetted) return;
 
-  if(canDoubleDown || canSurrender){
-    canDoubleDown = false;
-    canSurrender = false;
+  if(gameState.canDoubleDown || gameState.canSurrender){
+    gameState.canDoubleDown = false;
+    gameState.canSurrender = false;
     disableButtonsSurrender();
     disableDoubleDownButton();
   }
 
-  drawCards(1, cardDrawn, allCards, true);
-  checkPlayerSum();
+  drawCards(1, gameState.cardDrawn, gameState.allCards, true);
+  checkgameState.PlayerSum();
 }
 
 // Checks the player sum for to determine game state.
 function checkPlayerSum() {
   updatePlayerScreen();
 
-  if (playerSum < 21) {
-    canDrawOneMore = true;
+  if (gameState.playerSum < 21) {
+    gameState.canDrawOneMore = true;
   } else {
-    if (playerSum === 21 && dealerSum === 21) {
+    if (gameState.playerSum === 21 && gameState.dealerSum === 21) {
       gameEnded("Oh, that's a tie!", "tied");
-    } else if (playerSum === 21) {
+    } else if (gameState.playerSum === 21) {
       gameEnded("Damn, you won", "won");
     } else {
       gameEnded("You Busted", "lost");
@@ -673,84 +728,86 @@ function checkPlayerSum() {
 
 // Updates the sum on the player screen.
 function updatePlayerScreen() {
-  screen.textContent = "Sum: " + playerSum;
+  screen.textContent = "Sum: " + gameState.playerSum;
 }
 
 // Stands and lets the dealer get cards.
 function stand() {
-  if (isGameDone || !hasStarted) return;
+  if (gameState.isGameDone || !gameState.hasStarted) return;
 
-  stood = true;
-  checkPlayerSum();
+  gameState.stood = true;
+  checkgameState.PlayerSum();
 
-  while (!stopDrawing && allCards.length > 0) {
+  while (!gameState.stopDrawing && gameState.allCards.length > 0) {
     dealerDrawMore();
   }
 
-  checkDealerSum();
+  checkgameState.DealerSum();
   checkMoney();
 
-  stood = false;
+  gameState.stood = false;
 }
+//#endregion
 
-// DEALER FUNCTIONS
+//#region DEALER 
 
 // This function handles the dealer's initial two cards:
 // The first card is shown face up; the second card is shown as a back.
 function dealerInitial() {
-  dealerSum = 0;
-  dealerMaxSum = getRandomIntInclusive(minSumValue, maxSumValue);
-  if (debugDealerMaxSum) dealerMax.textContent = "Max Sum: " + dealerMaxSum;
+  gameState.dealerSum = 0;
+  gameState.dealerMaxSum = getRandomIntInclusive(minSumValue, maxSumValue);
+  if (debuggameState.DealerMaxSum) dealerMax.textContent = "Max Sum: " + gameState.dealerMaxSum;
 
-  switch (gameMode) {
+  switch (gameState.gameMode) {
     case "normal":
       // Draw first dealer card (face up)
-      drawCards(1, dealerDrawn, allCards, false, false);
+      drawCards(1, gameState.dealerDrawn, gameState.allCards, false, false);
       // Draw second dealer card (face down - back shown)
-      drawCards(1, dealerDrawn, allCards, false, true);
+      drawCards(1, gameState.dealerDrawn, gameState.allCards, false, true);
       break;
       case "pontoon":
         // Draw 2 dealer cards (face down - back shown)
-        drawCards(2, dealerDrawn, allCards, false, true);
+        drawCards(2, gameState.dealerDrawn, gameState.allCards, false, true);
       break;
   }
 
-  checkDealerSum();
-  hasStarted = true;
+  checkgameState.DealerSum();
+  gameState.hasStarted = true;
   checkInsurance();
 }
 
 // Additional dealer cards (drawn when player stands) are shown face up.
 function dealerDrawMore() {
-  if (stopDrawing || allCards.length === 0 || isGameDone) return;
+  if (gameState.stopDrawing || gameState.allCards.length === 0 || gameState.isGameDone) return;
 
-  drawCards(1, dealerDrawn, allCards, false, false);
-  checkDealerSum();
+  drawCards(1, gameState.dealerDrawn, gameState.allCards, false, false);
+  checkgameState.DealerSum();
 }
 
 function checkDealerSum() {
-  if (dealerSum > 21 && playerSum < 22) {
-    if (!isGameDone) gameEnded("Dealer Busted", "won");
-  } else if (dealerSum > dealerMaxSum) {
-    stopDrawing = true;
+  if (gameState.dealerSum > 21 && gameState.playerSum < 22) {
+    if (!gameState.isGameDone) gameEnded("Dealer Busted", "won");
+  } else if (gameState.dealerSum > gameState.dealerMaxSum) {
+    gameState.stopDrawing = true;
   }
 
-  if (stood) updateDealerMessage();
+  if (gameState.stood) updateDealerMessage();
 }
 
 function updateDealerMessage() {
-  if (dealerSum === playerSum) {
-    if (!isGameDone) gameEnded("Oh, that's a tie!", "tied");
-  } else if (dealerSum > playerSum && dealerSum <= 21) {
-    if (!isGameDone) {
+  if (gameState.dealerSum === gameState.playerSum) {
+    if (!gameState.isGameDone) gameEnded("Oh, that's a tie!", "tied");
+  } else if (gameState.dealerSum > gameState.playerSum && gameState.dealerSum <= 21) {
+    if (!gameState.isGameDone) {
       gameEnded("Dealer Won", "lost");
       checkMoney();
     }
   } else {
-    if (!isGameDone) gameEnded("You Won", "won");
+    if (!gameState.isGameDone) gameEnded("You Won", "won");
   }
 }
 
 function updateDealerScreen(showSum) {
-  dealerCard.textContent = showSum ? "Dealer Sum: " + dealerSum : "";
+  dealerCard.textContent = showSum ? "Dealer Sum: " + gameState.dealerSum : "";
 }
+//#endregion
