@@ -3,4 +3,4 @@
 A simple blackjack browser game
 
 ### Upcoming changes
-- **Game Saves**
+- **Game Saves** - Save card settings
