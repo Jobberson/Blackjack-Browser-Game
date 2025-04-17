@@ -376,6 +376,17 @@ function updateMoneyText() {
 }
 
 // HELPER FUNCTIONS
+function gameOver(){
+  showWins();
+  openModal("gameOverModal");
+}
+
+function checkMoney()
+{
+  if(currentMoney < 10){
+    gameOver();
+  }
+}
 
 function countWins() {
   winsCounter++;
@@ -654,12 +665,9 @@ function checkPlayerSum() {
       gameEnded("Damn, you won", "won");
     } else {
       gameEnded("You Busted", "lost");
-
-      if (currentMoney < 10) {
-        showWins();
-        openModal("gameOverModal");
-      }
     }
+
+    checkMoney();
   }
 }
 
@@ -680,6 +688,7 @@ function stand() {
   }
 
   checkDealerSum();
+  checkMoney();
 
   stood = false;
 }
@@ -735,7 +744,7 @@ function updateDealerMessage() {
   } else if (dealerSum > playerSum && dealerSum <= 21) {
     if (!isGameDone) {
       gameEnded("Dealer Won", "lost");
-      if (currentMoney === 0) openModal("gameOverModal");
+      checkMoney();
     }
   } else {
     if (!isGameDone) gameEnded("You Won", "won");
