@@ -321,7 +321,6 @@ function applyBackground() {
   } else {
     htmlElement.style.backgroundImage = `url('Backgrounds/${selectedBackground}.jpg')`;
     htmlElement.style.backgroundSize = 'cover';
-    htmlElement.style.backgroundRepeat = 'no-repeat';
     htmlElement.style.backgroundPosition = 'center center';
   }
 }
