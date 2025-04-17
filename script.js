@@ -574,7 +574,7 @@ function gameEnded(messageText, result) {
   gameState.stopDrawing = true;
   betReward(result);
   revealDealerSecondCard();
-  checkgameState.DealerSum();
+  DealerSum();
   updateDealerScreen(true);
   resolveInsurance(result === "lost" && gameState.dealerSum === 21);
   openModal('gameResultModal');
@@ -678,7 +678,6 @@ function revealDealerSecondCard() {
 //#endregion
 
 //#region PLAYER 
-
 // Starts the game.
 function drawInitial() {
   if (gameState.hasStarted || !gameState.hasBetted) return;
@@ -705,7 +704,7 @@ function drawMore() {
   }
 
   drawCards(1, gameState.cardDrawn, gameState.allCards, true);
-  checkgameState.PlayerSum();
+  PlayerSum();
 }
 
 // Checks the player sum for to determine game state.
@@ -737,13 +736,13 @@ function stand() {
   if (gameState.isGameDone || !gameState.hasStarted) return;
 
   gameState.stood = true;
-  checkgameState.PlayerSum();
+  PlayerSum();
 
   while (!gameState.stopDrawing && gameState.allCards.length > 0) {
     dealerDrawMore();
   }
 
-  checkgameState.DealerSum();
+  DealerSum();
   checkMoney();
 
   gameState.stood = false;
@@ -772,7 +771,7 @@ function dealerInitial() {
       break;
   }
 
-  checkgameState.DealerSum();
+  DealerSum();
   gameState.hasStarted = true;
   checkInsurance();
 }
@@ -782,7 +781,7 @@ function dealerDrawMore() {
   if (gameState.stopDrawing || gameState.allCards.length === 0 || gameState.isGameDone) return;
 
   drawCards(1, gameState.dealerDrawn, gameState.allCards, false, false);
-  checkgameState.DealerSum();
+  DealerSum();
 }
 
 function checkDealerSum() {
