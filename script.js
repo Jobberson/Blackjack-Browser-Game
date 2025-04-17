@@ -313,17 +313,13 @@ function applyBackground() {
   const selectedBackground = document.getElementById("backgroundSelection").value;
   const htmlElement = document.querySelector("html");
 
-  // Remove existing background styles
   htmlElement.style.backgroundImage = '';
   htmlElement.style.backgroundColor = '';
 
-  // Apply the selected background
   if (selectedBackground.startsWith('#')) {
-    // Apply solid color
     htmlElement.style.backgroundColor = selectedBackground;
   } else {
-    // Apply background image
-    htmlElement.style.backgroundImage = `url('/Backgrounds/${selectedBackground}')`;
+    htmlElement.style.backgroundImage = `url('Backgrounds/${selectedBackground}.jpg')`;
     htmlElement.style.backgroundSize = 'cover';
     htmlElement.style.backgroundRepeat = 'no-repeat';
     htmlElement.style.backgroundPosition = 'center center';
