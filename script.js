@@ -113,16 +113,22 @@ const maxSumValue = 17;
 //#region SAVE GAME 
 function saveGame() {
   localStorage.setItem('blackjackGameState', JSON.stringify(gameState));
+  localStorage.setItem('backgroundSelection', document.getElementById("backgroundSelection").value);
   alert('Game saved!');
 }
 
 function loadGame() {
   savedGameState = localStorage.getItem('blackjackGameState');
+  const savedBackground = localStorage.getItem('backgroundSelection');
   if (savedGameState) {
     gameState = JSON.parse(savedGameState);
+    if (savedBackground) {
+      document.getElementById("backgroundSelection").value = savedBackground;
+      applyBackground();
+    }
     alert('Game loaded!');
     continueGameButton.disabled = false;
-    if(debug) console.log(gameState);
+    if (debug) console.log(gameState);
   } else {
     alert('No saved game found.');
     continueGameButton.disabled = true;
@@ -134,7 +140,10 @@ function clearAllLocalStorage() {
 }
 
 function loadGameOnWindowLoad(){
-  window.onload = loadGame;
+  window.onload = function() {
+    loadGame();
+    applyBackground();
+  };
 }
 
 loadGameOnWindowLoad();
@@ -274,6 +283,10 @@ function resolveInsurance(dealerHasBlackjack) {
 //#endregion
 
 //#region SETTINGS 
+function settings() {
+  openModal("settingsModal");
+  document.getElementById("backgroundSelection").addEventListener("change", applyBackground);
+}
 
 function updateCardVisuals() {
   const playerCardsContainer = document.getElementById("playerCards");
@@ -296,13 +309,29 @@ function updateCardVisuals() {
   });
 }
 
-function settings() {
-  openModal("settingsModal");
+function applyBackground() {
+  const selectedBackground = document.getElementById("backgroundSelection").value;
+  const htmlElement = document.querySelector("html");
+
+  // Remove existing background styles
+  htmlElement.style.backgroundImage = '';
+  htmlElement.style.backgroundColor = '';
+
+  // Apply the selected background
+  if (selectedBackground.startsWith('#')) {
+    // Apply solid color
+    htmlElement.style.backgroundColor = selectedBackground;
+  } else {
+    // Apply background image
+    htmlElement.style.backgroundImage = `url('/Backgrounds/${selectedBackground}')`;
+    htmlElement.style.backgroundSize = 'cover';
+    htmlElement.style.backgroundRepeat = 'no-repeat';
+    htmlElement.style.backgroundPosition = 'center center';
+  }
 }
 //#endregion
 
 //#region POPUP 
-
 function openModal(modalId) {
   var modal = document.getElementById(modalId);
   modal.style.display = "block";
@@ -574,7 +603,7 @@ function gameEnded(messageText, result) {
   gameState.stopDrawing = true;
   betReward(result);
   revealDealerSecondCard();
-  DealerSum();
+  checkDealerSum();
   updateDealerScreen(true);
   resolveInsurance(result === "lost" && gameState.dealerSum === 21);
   openModal('gameResultModal');
@@ -684,7 +713,7 @@ function drawInitial() {
 
   // Draw 2 cards for the player (all shown front).
   drawCards(2, gameState.cardDrawn, gameState.allCards, true);
-  PlayerSum();
+  checkPlayerSum();
   updatePlayerScreen();
 
   // For dealer, draw the first card face up and second card face down.
@@ -704,7 +733,7 @@ function drawMore() {
   }
 
   drawCards(1, gameState.cardDrawn, gameState.allCards, true);
-  PlayerSum();
+  checkPlayerSum();
 }
 
 // Checks the player sum for to determine game state.
@@ -736,13 +765,13 @@ function stand() {
   if (gameState.isGameDone || !gameState.hasStarted) return;
 
   gameState.stood = true;
-  PlayerSum();
+  checkPlayerSum();
 
   while (!gameState.stopDrawing && gameState.allCards.length > 0) {
     dealerDrawMore();
   }
 
-  DealerSum();
+  checkDealerSum();
   checkMoney();
 
   gameState.stood = false;
@@ -756,7 +785,7 @@ function stand() {
 function dealerInitial() {
   gameState.dealerSum = 0;
   gameState.dealerMaxSum = getRandomIntInclusive(minSumValue, maxSumValue);
-  if (debuggameState.DealerMaxSum) dealerMax.textContent = "Max Sum: " + gameState.dealerMaxSum;
+  if (debugDealerMaxSum) dealerMax.textContent = "Max Sum: " + gameState.dealerMaxSum;
 
   switch (gameState.gameMode) {
     case "normal":
@@ -771,7 +800,7 @@ function dealerInitial() {
       break;
   }
 
-  DealerSum();
+  checkDealerSum();
   gameState.hasStarted = true;
   checkInsurance();
 }
@@ -781,7 +810,7 @@ function dealerDrawMore() {
   if (gameState.stopDrawing || gameState.allCards.length === 0 || gameState.isGameDone) return;
 
   drawCards(1, gameState.dealerDrawn, gameState.allCards, false, false);
-  DealerSum();
+  checkDealerSum();
 }
 
 function checkDealerSum() {
