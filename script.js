@@ -114,7 +114,6 @@ const maxSumValue = 17;
 function saveGame() {
   localStorage.setItem('blackjackGameState', JSON.stringify(gameState));
   localStorage.setItem('backgroundSelection', document.getElementById("backgroundSelection").value);
-  alert('Game saved!');
 }
 
 function loadGame() {
@@ -126,11 +125,8 @@ function loadGame() {
       document.getElementById("backgroundSelection").value = savedBackground;
       applyBackground();
     }
-    alert('Game loaded!');
     continueGameButton.disabled = false;
-    if (debug) console.log(gameState);
   } else {
-    alert('No saved game found.');
     continueGameButton.disabled = true;
   }
 }
@@ -234,7 +230,6 @@ function addInsuranceBet(amount) {
       gameState.insuranceBet += amount;
     }
     updateInsuranceText();
-    if (debug) console.log("Insurance bet added: " + amount);
   }
 }
 
@@ -252,8 +247,7 @@ function confirmInsuranceBet() {
       updateMoneyText();
       gameState.hasInsurance = true;
       closeModal("insuranceModal");
-      if (debug) console.log("Insurance bet placed: " + gameState.insuranceBet);
-    } else if (debug) console.log("Insurance bet was 0");
+    }
   }
 }
 
@@ -321,6 +315,7 @@ function applyBackground() {
   } else {
     htmlElement.style.backgroundImage = `url('Backgrounds/${selectedBackground}.jpg')`;
     htmlElement.style.backgroundSize = 'cover';
+
     htmlElement.style.backgroundPosition = 'center center';
   }
 }
@@ -330,13 +325,11 @@ function applyBackground() {
 function openModal(modalId) {
   var modal = document.getElementById(modalId);
   modal.style.display = "block";
-  if (debug) console.log("Opened " + modalId + " modal");
 }
 
 function closeModal(modalId) {
   var modal = document.getElementById(modalId);
   modal.style.display = "none";
-  if (debug) console.log("Closed " + modalId + " modal");
 }
 
 /*
@@ -402,8 +395,6 @@ function addBet(button) {
   }
   
   updateBetText();
-
-  if (debug) console.log("Bet added: " + button.innerText);
 }
 
 function resetBet() {
@@ -422,7 +413,6 @@ function bet() {
   gameState.hasBetted = true;
   closeModal("betModal");
   drawInitial();
-  if (debug) console.log("Bet placed: " + gameState.currentBet);
 }
 
 function betReward(result) {
@@ -514,7 +504,6 @@ function createCardElement(card, parentDiv, showBack) {
     cardElement.innerHTML = `<span class="rank">${rank}</span><span class="suit">${getSuitSymbol(
       suit
     )}</span>`;
-    console.log(cardElement.innerHTML); // Log the HTML structure
     if (rank === "J" || rank === "Q" || rank === "K") {
       if (document.getElementById("faceImagesCheckbox").checked) {
         cardElement.classList.add("faceImages");
@@ -664,7 +653,6 @@ function hardReset(){
 function updateCardElement(cardElement, card) {
   cardElement.className = `card rank-${getRank(card.value)} ${card.suit}`;
   cardElement.innerHTML = `<span class="rank">${getRank(card.value)}</span><span class="suit">${getSuitSymbol(card.suit)}</span>`;
-  console.log("Updated card element:", cardElement);
 }
 
 function revealDealerSecondCard() {
@@ -681,22 +669,14 @@ function revealDealerSecondCard() {
           // first card
           let firstCardElement = dealerCardsDiv.children[0];
           let firstCard = gameState.dealerDrawn[0];
-          console.log("First card element:", firstCardElement);
-          console.log("First card data:", firstCard);
           updateCardElement(firstCardElement, firstCard);
 
           // second card
-          console.log("Second card element:", secondCardElement);
-          console.log("Second card data:", card);
           updateCardElement(secondCardElement, card);
           break;
         // Add other game modes if necessary
       }
-    } else {
-      console.error("Second card element or card data is missing.");
-    }
-  } else {
-    console.error("Dealer has not drawn enough cards.");
+    } 
   }
 }
 //#endregion
