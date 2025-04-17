@@ -432,6 +432,7 @@ function updateMoneyText() {
 function gameOver(){
   showWins();
   openModal("gameOverModal");
+  clearAllLocalStorage();
 }
 
 function checkMoney()
@@ -559,8 +560,7 @@ function menu(){
   document.getElementById("mainMenu").style.display = "block";
   document.getElementById("game").style.display = "none";
   closeModal("gameResultModal");
-  if(!isGameDone) saveGame();
-  else clearAllLocalStorage()
+  saveGame();
 }
 
 // Function called when the game ends.
@@ -578,6 +578,7 @@ function gameEnded(messageText, result) {
   updateDealerScreen(true);
   resolveInsurance(result === "lost" && gameState.dealerSum === 21);
   openModal('gameResultModal');
+  saveGame();
 }
 
 function tryAgain() {
