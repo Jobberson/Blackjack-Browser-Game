@@ -38,7 +38,8 @@ h1{
 }
 
 .buttons:disabled{
-  pointer-events:none;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .main-menu-buttons {
@@ -169,6 +170,16 @@ h1{
   margin: 0 0 0 10px;
   padding: 8px 0 0 0;
   font-size: 14px;
+}
+
+#mainMenu {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 #mainMenuDiv {

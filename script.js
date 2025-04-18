@@ -88,6 +88,7 @@ let gameState = {
   canDoubleDown: true,
   canSurrender: true,
   gameMode: "normal",
+  isAllIn: false,
   //#endregion
 
   //#region Player Variables
@@ -114,17 +115,50 @@ const maxSumValue = 17;
 function saveGame() {
   localStorage.setItem('blackjackGameState', JSON.stringify(gameState));
   localStorage.setItem('backgroundSelection', document.getElementById("backgroundSelection").value);
+
+  const options = ["fourColours", "faceImages", "simpleCards", "inText"];
+  const visuals = {};
+  options.forEach(option => {
+    visuals[option] = document.getElementById(option + "Checkbox").checked;
+  });
+  localStorage.setItem('cardVisualSettings', JSON.stringify(visuals));
 }
 
 function loadGame() {
   savedGameState = localStorage.getItem('blackjackGameState');
   const savedBackground = localStorage.getItem('backgroundSelection');
+  const savedVisuals = localStorage.getItem('cardVisualSettings');
+
   if (savedGameState) {
     gameState = JSON.parse(savedGameState);
+
+    // Make sure numeric values are treated as numbers
+    gameState.currentMoney = Number(gameState.currentMoney);
+    gameState.currentBet = Number(gameState.currentBet);
+    gameState.insuranceBet = Number(gameState.insuranceBet);
+    gameState.winsCounter = Number(gameState.winsCounter);
+
+    if (isNaN(gameState.currentMoney)) gameState.currentMoney = 1000;
+    if (isNaN(gameState.currentBet)) gameState.currentBet = 0;
+    if (isNaN(gameState.insuranceBet)) gameState.insuranceBet = 0;
+    if (isNaN(gameState.winsCounter)) gameState.winsCounter = 0;
+
+    // Apply saved background
     if (savedBackground) {
       document.getElementById("backgroundSelection").value = savedBackground;
       applyBackground();
     }
+
+    // Apply saved card visual settings
+    if (savedVisuals) {
+      const visuals = JSON.parse(savedVisuals);
+      Object.keys(visuals).forEach(option => {
+        const checkbox = document.getElementById(option + "Checkbox");
+        if (checkbox) checkbox.checked = visuals[option];
+      });
+      updateCardVisuals();
+    }
+
     continueGameButton.disabled = false;
   } else {
     continueGameButton.disabled = true;
@@ -186,19 +220,25 @@ function enableButtonsSurrender(){
 
 //#region DOUBLE DOWN 
 
-function doubleDown(){
-  if(!gameState.canDoubleDown) return;
+function doubleDown() {
+  if (!gameState.canDoubleDown) return;
+
+  // Prevent doubling down if the player can't afford to double the current bet
+  if (gameState.currentMoney < gameState.currentBet) return;
 
   gameState.currentMoney -= gameState.currentBet;
-  gameState.currentBet = gameState.currentBet * 2;
+  gameState.currentBet *= 2;
   gameState.hasDoubled = true;
+
   updateBetText();
   updateMoneyText();
+
   drawCards(1, gameState.cardDrawn, gameState.allCards, true, false);
   disableDoubleDownButton();
   disableHitButton();
   stand();
 }
+
 
 function disableHitButton(){
   hitButton.disabled = true;
@@ -215,6 +255,18 @@ function disableDoubleDownButton() {
 function enableDoubleDownButton() {
   doubleDownButton.disabled = false;
 }
+
+function updateDoubleDownButton() {
+  if (
+    !gameState.canDoubleDown ||
+    gameState.currentMoney < gameState.currentBet
+  ) {
+    disableDoubleDownButton();
+  } else {
+    enableDoubleDownButton();
+  }
+}
+
 //#endregion
 
 //#region INSURANCE 
@@ -332,43 +384,6 @@ function closeModal(modalId) {
   modal.style.display = "none";
 }
 
-/*
-
-///
-/// I'm taking down off to prevent softlocks
-///
-
-// Function to close the modal when Escape key is pressed
-function closeModalOnEscape(event) {
-  if (event.key === "Escape") {
-    var modals = document.getElementsByClassName("modal");
-    for (var i = 0; i < modals.length; i++) {
-      if (modals[i].style.display === "block") {
-        modals[i].style.display = "none";
-      }
-    }
-  }
-}
-
-// Function to handle Enter key press
-function handleEnterKeyPress(event) {
-  if (event.key === "Enter") {
-    var betModal = document.getElementById("betModal");
-    var gameOverModal = document.getElementById("gameOverModal");
-
-    if (betModal.style.display === "block") {
-      bet(); // Place the bet if bet modal is visible
-    } else if (gameOverModal.style.display === "block") {
-      tryAgain(); // Run tryAgain function if game over modal is visible
-    }
-  }
-}
-
-// Add event listeners for Escape and Enter keys
-document.addEventListener("keydown", closeModalOnEscape);
-document.addEventListener("keydown", handleEnterKeyPress);
-*/
-
 function betPopup() {
   bet();
 }
@@ -381,25 +396,32 @@ function gameOverPopup() {
 //#region BET 
 
 function addBet(button) {
-  if (gameState.hasStarted || gameState.hasBetted) return;
+  if (gameState.hasStarted || gameState.hasBetted || gameState.isAllIn) return;
 
-  if(button.textContent === "All In"){
+  const txt = button.textContent.trim();
+
+  if (txt === "All In") {
+    // all-in: move your entire stack into the bet
     gameState.currentBet = gameState.currentMoney;
-    gameState.currentMoney = 0;
-  } else{
-    let buttonValue = parseInt(button.textContent);
-    
-    if (buttonValue + gameState.currentBet > gameState.currentMoney) return;
-    
-    gameState.currentBet += buttonValue;
+    // money remains untouched here until you call bet(), so no updateMoneyText()
+    gameState.isAllIn = true;
+  } else {
+    // strip out _every_ non‑digit and parse what's left
+    const digits = txt.replace(/\D/g, '');
+    const value  = parseInt(digits, 10);
+
+    if (isNaN(value)) return;                    // guard against weird text
+    if (value + gameState.currentBet > gameState.currentMoney) return;
+
+    gameState.currentBet += value;
   }
-  
+
   updateBetText();
 }
 
 function resetBet() {
   if (gameState.hasStarted || gameState.hasBetted) return;
-
+  gameState.isAllIn = false;
   gameState.currentBet = 0;
   updateBetText();
 }
@@ -413,6 +435,7 @@ function bet() {
   gameState.hasBetted = true;
   closeModal("betModal");
   drawInitial();
+  updateDoubleDownButton();
 }
 
 function betReward(result) {
@@ -559,6 +582,7 @@ function startGame(){
   openModal("betModal");
   document.getElementById("mainMenu").style.display = "none";
   document.getElementById("game").style.display = "block";
+  updateDoubleDownButton();
 }
 
 function continueGame() {
@@ -611,6 +635,7 @@ function reset() {
   gameState.isGameDone = false;
   gameState.canDoubleDown = true;
   gameState.canSurrender = true;
+  gameState.isAllIn = false;
   gameState.allCards = [...originalCards];
   message.textContent = "";
   dealerCardsDiv.innerHTML = "";
@@ -622,6 +647,7 @@ function reset() {
   enableDoubleDownButton();
   enableHitButton();
   enableButtonsSurrender();
+  updateDoubleDownButton();
 }
 
 function resetPlayerVariables() {
@@ -709,6 +735,8 @@ function drawMore() {
 
   drawCards(1, gameState.cardDrawn, gameState.allCards, true);
   checkPlayerSum();
+  
+  updateDoubleDownButton();
 }
 
 // Checks the player sum for to determine game state.
