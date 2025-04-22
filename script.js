@@ -597,6 +597,7 @@ function menu(){
   document.getElementById("mainMenu").style.display = "block";
   document.getElementById("game").style.display = "none";
   closeModal("gameResultModal");
+  closeModal("gameOverModal");
   saveGame();
 }
 

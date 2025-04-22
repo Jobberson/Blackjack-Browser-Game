@@ -2,7 +2,6 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
 }
 
 p {
@@ -15,7 +14,7 @@ h1{
 
 .title {
   text-align: center;
-  font-size: 5vw;
+  font-size: 33px;
   color:#f5f5f5;
 }
 
@@ -26,14 +25,12 @@ h1{
 .playingCards {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
 }
 
 .buttons {
   border-radius: 8px;
   border: 1px solid #a8a8a8;
-  font-size: 4vw; 
-  padding: 1vw; 
+  font-size: 18px;
 }
 
 .buttons:hover{
@@ -48,14 +45,14 @@ h1{
 .main-menu-buttons {
   margin: 10px;
   padding: 20px;
-  width: 80%; 
+  width: 200px;
   border: 0px;
 }
 
-.game-buttons {
+.game-buttons{
   height: 35px;
   width: 80px;
-  font-size: 4vw; 
+  font-size: 16px;
   margin: 0 10px 10px 10px;
 }
 
@@ -216,7 +213,6 @@ h1{
 }
 
 #gameText {
-  padding: 0 200px 0 200px;
   margin: 10px 10px 0 10px;
   display: flex;
   flex-direction: row;
@@ -280,24 +276,26 @@ h1{
   width: 100%; /* Full width */
   height: 100%; /* Full height */
   overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
+
 
 .modal-content {
   background-color: #fefefe;
   margin: 15% auto; /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
-  width: 80%; 
+  width: 50%; /* Could be more or less, depending on screen size */
 }
 
 .modal-text {
   color: black;
-  font-size: 4vw; 
+  font-size:19px;
 }
 
 .modal-title {
-  font-size: 5vw; 
+  font-size: 25px;
 }
 
 .close {
@@ -320,34 +318,125 @@ h1{
 }
 
 /* Media queries for smaller screens */
-@media (max-width: 1080px) {
-    .title {
-        font-size: 6vw;
-    }
+@media (max-width: 900px) {
+  .title {
+      font-size: 6vw;
+  }
 
-    .buttons {
-        font-size: 5vw;
-        padding: 2vw;
-    }
+  .buttons {
+      font-size: 5vw;
+      padding: 2vw;
+    width: 15%;
+  }
 
-    .main-menu-buttons {
-        width: 90%;
-    }
+  .main-menu-buttons {
+      width: 90%;
+  }
 
-    .game-buttons {
-        font-size: 5vw;
-        width: 90px;
-    }
+  .game-buttons {
+      font-size: 3vw;
+      width: 15%;
+    height: 1%;
+  }
 
-    .modal-content {
-        width: 90%;
-    }
+  .modal-content {
+      width: 90%;
+  }
 
-    .modal-text {
-        font-size: 5vw;
-    }
+  .modal-text {
+      font-size: 5vw;
+  }
 
-    .modal-title {
-        font-size: 6vw;
-    }
+  .modal-title {
+      font-size: 6vw;
+  }
+  
+  #surrenderButton{
+    width: 20%;
+  }
+  
+  #doubleButton{
+    width: 26%;
+  }
+  
+  #gameButtonsDivDiv{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content:space-evenly;
+    align-items: center;
+  }
+  
+  #gameButtonsDiv{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content:space-evenly;
+    align-items: center;
+    width:100%;
+  }
+  
+  #gameText {
+      margin: 10px auto 0 auto; /* Center horizontally */
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: center; /* Center the text within the flex container */
+      align-items: center; /* Center vertically */
+    font-size:2vw;
+  }
+
+  #gameTextBackground {
+      margin: auto;
+      text-align: center;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.28);
+  }
+
+  .gameTextTop {
+      padding: 15px;
+      text-align: center; /* Center text within each paragraph */
+  }
+  
+  .mode-selector-buttons{
+    width: 20%;
+    height: 20%;
+      font-size: 3vw;
+  }
+  
+  .add-bet-buttons{
+    width: 13%;
+    font-size: 3vw;
+  }
+  
+  .confirm-bet-buttons{
+    width: 20%;
+    font-size: 3vw;
+  }
+  
+  .game-result-buttons{
+    width: 25%;
+    height: 15%;
+    font-size: 3vw;
+  }
+  
+  .insurance-bet-buttons{
+    width: 20%;
+    height: 15%;
+    font-size: 3vw;
+  }
+  
+  .insurance-bet-confirm-buttons{
+    width: 20%;
+    height: 15%;
+    font-size: 3vw;
+  }
+  
+  #insuranceDescription{
+    font-size:3vw;
+  }
+  
+  .game-over-buttons{
+    width:22%;
+    height:1%;
+    font-size:3vw;
+  }
 }
