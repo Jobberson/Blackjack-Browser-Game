@@ -2,6 +2,7 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  font-family: Arial, sans-serif;
 }
 
 p {
@@ -14,7 +15,7 @@ h1{
 
 .title {
   text-align: center;
-  font-size: 33px;
+  font-size: 5vw;
   color:#f5f5f5;
 }
 
@@ -25,12 +26,14 @@ h1{
 .playingCards {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .buttons {
   border-radius: 8px;
   border: 1px solid #a8a8a8;
-  font-size: 18px;
+  font-size: 4vw; 
+  padding: 1vw; 
 }
 
 .buttons:hover{
@@ -45,32 +48,32 @@ h1{
 .main-menu-buttons {
   margin: 10px;
   padding: 20px;
-  width: 200px;
+  width: 80%; 
   border: 0px;
 }
 
-.game-buttons{
-  height: 35px;
-  width: 80px;
-  font-size: 16px;
+.game-buttons {
+  height: 5%;
+  width: 18%;
+  font-size: 2vw; 
   margin: 0 10px 10px 10px;
 }
 
 .add-bet-buttons{
   margin: 5px;
   padding: 3px 7px;
-  width: 60px;
+  width: 15%;
 }
 
 .confirm-bet-buttons{
   margin: 5px;
   padding: 3px 7px;
-  width: 100px;
+  width: 20%;
 }
 
 .game-result-buttons{
-  height:35px;
-  width:120px;
+  width:25%;
+  font-size: 3vw;
 }
 
 .insurance-bet-buttons{
@@ -93,8 +96,8 @@ h1{
 }
 
 .mode-selector-buttons{
-  width:90px;
-  height:36px;
+  width:30%;
+  height:20%;
 }
 
 .in-game-top-buttons{
@@ -191,21 +194,17 @@ h1{
 #gameButtonsDiv {
   margin: 0 auto;
   padding: 15px 0;
-  width: 800px;
+  width: 80%;
   background: rgba(0, 0, 0, 0.28);
   text-align: center;
 }
 
 #doubleButton{
-  width: 120px;
+  width: 23%;
 }
 
 #doubleButton:hover{
   background-color:lightgray;
-}
-
-#surrenderButton{
-  width: 95px;
 }
 
 #surrenderButton:hover{
@@ -213,18 +212,26 @@ h1{
 }
 
 #gameText {
-  padding: 0 200px 0 200px;
-  margin: 10px 10px 0 10px;
+  margin: 10px auto 0 auto; /* Center horizontally */
+  width: 50%;
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: center; /* Center the text within the flex container */
+  align-items: center; /* Center vertically */
 }
 
 #gameTextBackground {
   margin: auto;
-  width: 800px;
+  text-align: center;
+  width: 80%;
   background: rgba(0, 0, 0, 0.28);
 }
+
+.gameTextTop {
+  padding: 15px;
+  text-align: center; /* Center text within each paragraph */
+}
+
 
 #hitButton{
   background-color: #23f707;
@@ -277,26 +284,24 @@ h1{
   width: 100%; /* Full width */
   height: 100%; /* Full height */
   overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
-
 
 .modal-content {
   background-color: #fefefe;
   margin: 15% auto; /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
-  width: 50%; /* Could be more or less, depending on screen size */
+  width: 80%; 
 }
 
 .modal-text {
   color: black;
-  font-size:19px;
+  font-size: 4vw; 
 }
 
 .modal-title {
-  font-size: 25px;
+  font-size: 5vw; 
 }
 
 .close {
@@ -318,3 +323,159 @@ h1{
   color:white;
 }
 
+#addBetButtonsDiv{
+  margin: 30px 0 33px 0;
+}
+
+/* Media queries for smaller screens */
+@media (max-width: 600px) {
+    .title {
+        font-size: 6vw;
+    }
+
+    .buttons {
+        font-size: 5vw;
+        padding: 2vw;
+    }
+
+    .main-menu-buttons {
+        width: 90%;
+    }
+
+    .game-buttons {
+        font-size: 5vw;
+        width: 90px;
+    }
+  
+    .game-result-buttons{
+      width:30%;
+    }
+    .add-bet-buttons{
+      width: 17%;
+    }
+
+    .modal-content {
+        width: 90%;
+    }
+
+    .modal-text {
+        font-size: 5vw;
+    }
+
+    .modal-title {
+        font-size: 6vw;
+    }
+    
+  #surrenderButton{
+    width: 40%;
+  }
+  
+  #doubleButton{
+    width: 50%;
+  }
+  
+  #standButton{
+    width: 25%;
+  }
+  
+  #hitButton{
+    width: 25%;
+  }
+}
+
+/* Media queries for larger screens */
+@media (min-width: 1920px) {
+  .title {
+      font-size: 3vw;
+  }
+
+  .buttons {
+      font-size: 2vw;
+      padding: 1vw; 
+  }
+
+  .main-menu-buttons {
+      width: 50%; 
+  }
+
+  .game-buttons {
+      font-size: 2vw;
+      width: 60px; 
+  }
+
+  .modal-content {
+      width: 60%; 
+  }
+
+  .modal-text {
+      font-size: 2vw;
+  }
+
+  .modal-title {
+      font-size: 3vw;
+  }
+}
+
+@media (min-width: 2560px) {
+  .title {
+      font-size: 2.5vw;
+  }
+
+  .buttons {
+      font-size: 1.5vw;
+      padding: 0.8vw; 
+  }
+
+  .main-menu-buttons {
+      width: 40%; 
+  }
+
+  .game-buttons {
+      font-size: 1.5vw;
+      width: 50px; 
+  }
+
+  .modal-content {
+      width: 50%; 
+  }
+
+  .modal-text {
+      font-size: 1.5vw;
+  }
+
+  .modal-title {
+      font-size: 2.5vw;
+  }
+}
+
+@media (min-width: 4096px) {
+  .title {
+      font-size: 2vw;
+  }
+
+  .buttons {
+      font-size: 1vw;
+      padding: 0.5vw; 
+  }
+
+  .main-menu-buttons {
+      width: 30%; 
+  }
+
+  .game-buttons {
+      font-size: 1vw;
+      width: 40px; 
+  }
+
+  .modal-content {
+      width: 40%; 
+  }
+
+  .modal-text {
+      font-size: 1vw;
+  }
+
+  .modal-title {
+      font-size: 2vw;
+  }
+}
