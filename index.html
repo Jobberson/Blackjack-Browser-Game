@@ -9,6 +9,7 @@
       content="A simple blackjack card game with non-real bets"
     />
     <meta name="google" content="notranslate" />
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <link rel="icon" sizes="192x192" href="Icons/icon.png" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="CardStyles/cards.css" />
@@ -18,7 +19,11 @@
     />
     <script src="script.js" defer></script>
   </head>
-  <body>
+  <body>  
+    <form action="verify_recaptcha.php" method="POST">
+      <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div>
+      <button type="submit">Submit</button>
+    </form>
     <div id="mainMenu">
       <div class="title">
         <h1>Blackjack ♠</h1>
