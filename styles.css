@@ -320,6 +320,7 @@ h1{
 
 /* Media queries for smaller screens */
 @media (max-width: 900px) {
+  
   .title {
       font-size: 6vw;
   }
@@ -395,6 +396,7 @@ h1{
   .gameTextTop {
       padding: 15px;
       text-align: center; /* Center text within each paragraph */
+    font-size: 3vw;
   }
   
   .mode-selector-buttons{
@@ -439,5 +441,9 @@ h1{
     width:22%;
     height:1%;
     font-size:3vw;
+  }
+  
+  #cardsDrawn{
+    font-size: 3vw;
   }
 }
