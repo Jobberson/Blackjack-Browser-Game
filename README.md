@@ -1,6 +1,7 @@
 # Blackjack
 
-A simple singleplayer Blackjack browser game with no real bets
+A simple singleplayer Blackjack browser game with no real bets <br>
+Made with HTML, CSS and native JS
 
 ### Card visuals
 
